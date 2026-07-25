@@ -1436,3 +1436,191 @@ a {
     height: 0;
     width: 0;
 }
+
+
+/* Readability pass: larger, clearer dashboard typography.
+   No layout, data, cache, or ranking logic changes. */
+
+/* Top KPI cards */
+.stat-card .label,
+.summary-card .label,
+.metric-card .label,
+.stat-label,
+.summary-label,
+.metric-label {
+    font-size: 0.92rem;
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: 0.13em;
+    color: #b9bac2;
+}
+
+.stat-card .value,
+.summary-card .value,
+.metric-card .value,
+.stat-value,
+.summary-value,
+.metric-value {
+    font-size: clamp(2rem, 2.4vw, 2.55rem);
+    line-height: 1.02;
+    font-weight: 760;
+}
+
+.stat-card .meta,
+.stat-card small,
+.summary-card .meta,
+.summary-card small,
+.metric-card .meta,
+.metric-card small,
+.stat-meta,
+.summary-meta,
+.metric-meta {
+    font-size: 0.98rem;
+    line-height: 1.3;
+    font-weight: 560;
+    color: #b4b5bc;
+}
+
+/* Section and panel headings */
+.panel-heading h2,
+.panel-heading h3,
+.section-title,
+.panel-title,
+h2.section-title,
+h3.section-title {
+    font-size: clamp(1.32rem, 1.6vw, 1.62rem);
+    line-height: 1.2;
+    font-weight: 680;
+}
+
+.panel-heading p,
+.panel-subtitle,
+.section-subtitle,
+.eyebrow,
+.section-kicker {
+    font-size: 0.94rem;
+    line-height: 1.4;
+}
+
+/* Ranking lists */
+.ranking-title,
+.ranking-copy strong,
+.ranking-list strong,
+.user-copy strong,
+.user-list strong,
+.activity-list strong,
+.breakdown-list strong {
+    font-size: 1.04rem;
+    line-height: 1.35;
+    font-weight: 650;
+}
+
+.ranking-meta,
+.user-copy small,
+.activity-meta,
+.breakdown-meta,
+.ranking-list small,
+.user-list small {
+    font-size: 0.91rem;
+    line-height: 1.35;
+}
+
+.ranking-value,
+.user-count,
+.activity-value,
+.breakdown-value {
+    font-size: 1rem;
+    line-height: 1.3;
+    font-weight: 680;
+}
+
+.ranking-rank,
+.user-rank {
+    font-size: 0.92rem;
+    font-weight: 720;
+}
+
+/* Playback Method and Media Profile */
+.breakdown-label,
+.playback-label,
+.profile-label,
+.breakdown-list .label,
+.playback-method .label,
+.media-profile .label {
+    font-size: 1rem;
+    line-height: 1.35;
+    font-weight: 620;
+}
+
+.breakdown-value,
+.playback-value,
+.profile-value,
+.playback-method .value,
+.media-profile .value {
+    font-size: 1rem;
+    line-height: 1.35;
+    font-weight: 680;
+}
+
+/* Tabs and controls */
+.ranking-tab,
+.tab-button,
+button[data-ranking-period],
+button[data-user-period],
+button[data-period] {
+    font-size: 0.92rem;
+    line-height: 1.2;
+    font-weight: 660;
+    padding-top: 0.62rem;
+    padding-bottom: 0.62rem;
+}
+
+/* Recent activity and recently added cards */
+.activity-title,
+.recent-title,
+.media-title,
+.poster-title {
+    font-size: 1rem;
+    line-height: 1.32;
+    font-weight: 620;
+}
+
+.activity-meta,
+.recent-meta,
+.media-meta,
+.poster-meta {
+    font-size: 0.9rem;
+    line-height: 1.35;
+}
+
+/* General lower-dashboard readability */
+.panel,
+.ranking-panel,
+.activity-panel,
+.breakdown-panel,
+.users-panel {
+    font-size: 1rem;
+}
+
+@media (max-width: 760px) {
+    .stat-card .label,
+    .summary-card .label,
+    .metric-card .label,
+    .stat-label,
+    .summary-label,
+    .metric-label {
+        font-size: 0.84rem;
+    }
+
+    .stat-card .meta,
+    .stat-card small,
+    .summary-card .meta,
+    .summary-card small,
+    .metric-card .meta,
+    .metric-card small,
+    .stat-meta,
+    .summary-meta,
+    .metric-meta {
+        font-size: 0.91rem;
+    }
+}

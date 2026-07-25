@@ -20,6 +20,9 @@ versioning where practical.
 
 ### Changed
 
+- Increased KPI labels, KPI subtitles, section headings, ranking text, tabs, playback details, and lower-dashboard typography for better readability.
+
+
 - Made the Fulflix logo link to https://flix.inactive.se:8920 and repaired the top navigation anchors.
 
 
