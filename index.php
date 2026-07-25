@@ -144,7 +144,7 @@ function renderRankingPanel(
 ): void {
     $defaultPeriod = (string) array_key_first($periods);
 
-    echo '<article class="panel ranking-panel" data-ranking-panel="' . e($key) . '">';
+    echo '<article id="most-watched" class="panel ranking-panel" data-ranking-panel="' . e($key) . '">';
     echo '<div class="ranking-panel-header">';
     echo '<div class="panel-heading"><p>' . e($label) . '</p><h2>Most watched</h2></div>';
     echo '<div class="ranking-tabs" role="tablist" aria-label="Select time range">';
@@ -303,7 +303,21 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<main class="page-shell">
+<header class="jellyfin-topbar">
+    <div class="jellyfin-topbar-inner">
+        <img class="jellyfin-brand-logo"
+             src="https://inactive.se/fulflix/logo.png"
+             alt="Fulflix">
+        <nav class="jellyfin-nav" aria-label="Dashboard navigation">
+            <a class="is-active" href="#overview">Overview</a>
+            <a href="#most-watched">Most Watched</a>
+            <a href="#users">Users</a>
+            <a href="#playback">Playback</a>
+        </nav>
+    </div>
+</header>
+
+<main id="overview" class="page-shell">
     <header class="site-header">
         <div>
             <p class="eyebrow">JELLYFIN LIBRARY</p>
@@ -355,7 +369,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         </div>
     </section>
 
-    <section class="metric-grid v2-metric-grid" data-section="playback">
+    <section class="metric-grid v2-metric-grid" id="playback" data-section="playback">
         <article class="metric-card">
             <span class="metric-label">Playback count</span>
             <strong><?= formatNumber((int) $playback30['Plays']) ?></strong>
@@ -507,7 +521,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         ?>
     </section>
 
-    <section class="v2-operations-grid" data-section="users">
+    <section class="v2-operations-grid" id="users" data-section="users">
         <?php renderUserPanel(['7' => $topUsers7, '30' => $topUsers30]); ?>
 
         <article class="panel">

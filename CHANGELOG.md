@@ -14,7 +14,14 @@ versioning where practical.
 - GitHub issue and pull request templates.
 - EditorConfig and expanded Git ignore rules.
 
+### Fixed
+
+- Fixed the Most Watched navigation anchor and removed the non-functional menu icon.
+
 ### Changed
+
+- Added a Jellyfin-inspired Fulflix visual theme and top navigation without changing dashboard data or metrics.
+
 
 - Increased typography and spacing across lower dashboard panels, especially Playback Method and Media Profile, without changing the top summary rows.
 

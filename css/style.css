@@ -1171,3 +1171,237 @@ h1 {
         font-size: 0.92rem;
     }
 }
+
+
+/* Fulflix / Jellyfin-inspired visual theme.
+   Layout, data, ranking logic, and dashboard content remain unchanged. */
+
+:root {
+    --jf-bg: #0d0d0f;
+    --jf-surface: #171719;
+    --jf-surface-2: #202024;
+    --jf-border: rgba(255, 255, 255, 0.075);
+    --jf-text: #f1f1f3;
+    --jf-muted: #aaaab0;
+    --jf-accent: #d34a32;
+    --jf-accent-soft: rgba(211, 74, 50, 0.18);
+}
+
+html {
+    scroll-behavior: smooth;
+    background: var(--jf-bg);
+}
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(211, 74, 50, 0.055), transparent 28rem),
+        var(--jf-bg);
+    color: var(--jf-text);
+    padding-top: 58px;
+}
+
+.jellyfin-topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 1000;
+    height: 58px;
+    background: rgba(25, 25, 27, 0.96);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(14px);
+}
+
+.jellyfin-topbar-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 22px;
+}
+
+
+.jellyfin-brand-logo {
+    height: 31px;
+    width: auto;
+    object-fit: contain;
+}
+
+.jellyfin-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+.jellyfin-nav a {
+    color: #9c9ca2;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 650;
+    transition: color 140ms ease, opacity 140ms ease;
+}
+
+.jellyfin-nav a:hover,
+.jellyfin-nav a.is-active {
+    color: #ffffff;
+}
+
+.panel,
+.stat-card,
+.summary-card,
+.ranking-card,
+.recent-card {
+    background: linear-gradient(180deg, rgba(31, 31, 35, 0.98), rgba(22, 22, 25, 0.98));
+    border: 1px solid var(--jf-border);
+    box-shadow: none;
+}
+
+.panel:hover,
+.stat-card:hover,
+.summary-card:hover,
+.ranking-card:hover,
+.recent-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.panel-heading p,
+.eyebrow,
+.section-kicker {
+    color: #8f8f95;
+}
+
+.panel-heading h2,
+.section-title,
+h1, h2, h3 {
+    color: var(--jf-text);
+}
+
+.ranking-tab,
+.tab-button,
+button[data-ranking-period],
+button[data-user-period] {
+    background: #2a2a2e;
+    color: #c9c9ce;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ranking-tab:hover,
+.tab-button:hover,
+button[data-ranking-period]:hover,
+button[data-user-period]:hover {
+    background: #333338;
+    color: #fff;
+}
+
+.ranking-tab.is-active,
+.tab-button.is-active,
+button[data-ranking-period].is-active,
+button[data-user-period].is-active {
+    background: var(--jf-accent-soft);
+    color: #fff;
+    border-color: rgba(211, 74, 50, 0.42);
+}
+
+.ranking-list li,
+.user-list li,
+.breakdown-list li,
+.activity-list li {
+    background: rgba(255, 255, 255, 0.018);
+    border-color: rgba(255, 255, 255, 0.045);
+}
+
+.ranking-list li:hover,
+.user-list li:hover,
+.breakdown-list li:hover,
+.activity-list li:hover {
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.ranking-rank,
+.user-rank {
+    background: #2b2b30;
+    color: #fff;
+}
+
+.ranking-list li:first-child .ranking-rank,
+.user-list li:first-child .user-rank {
+    background: var(--jf-accent);
+}
+
+.ranking-meta,
+.user-copy small,
+.breakdown-meta,
+.activity-meta,
+small,
+.muted {
+    color: var(--jf-muted);
+}
+
+.ranking-value,
+.user-count,
+.breakdown-value,
+.activity-value {
+    color: #f4f4f6;
+}
+
+.progress,
+.progress-track,
+.bar-track {
+    background: #2b2b30;
+}
+
+.progress > span,
+.progress-bar,
+.bar-fill {
+    background: linear-gradient(90deg, #b63729, var(--jf-accent));
+}
+
+.poster-card,
+.media-card,
+.recent-item {
+    background: #151519;
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    overflow: hidden;
+    transition: transform 150ms ease, border-color 150ms ease;
+}
+
+.poster-card:hover,
+.media-card:hover,
+.recent-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+a {
+    color: inherit;
+}
+
+@media (max-width: 760px) {
+    body {
+        padding-top: 54px;
+    }
+
+    .jellyfin-topbar {
+        height: 54px;
+    }
+
+    .jellyfin-topbar-inner {
+        padding: 0 14px;
+        gap: 12px;
+    }
+
+    .jellyfin-brand-logo {
+        height: 27px;
+    }
+
+    .jellyfin-nav {
+        display: none;
+    }
+}
+
+
+#overview,
+#most-watched,
+#users,
+#playback {
+    scroll-margin-top: 76px;
+}
