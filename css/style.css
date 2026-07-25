@@ -878,3 +878,71 @@ h1 {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
+/* Combined movie and series ranking panels */
+.ranking-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.ranking-panel-header .panel-heading {
+    margin-bottom: 0;
+}
+
+.ranking-tabs {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: rgba(0, 0, 0, 0.14);
+}
+
+.ranking-tab {
+    min-height: 28px;
+    padding: 5px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.67rem;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.ranking-tab:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.ranking-tab.is-active {
+    color: var(--text);
+    background: var(--surface-hover);
+    box-shadow: inset 0 0 0 1px rgba(126, 200, 245, 0.18);
+}
+
+.ranking-period[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 520px) {
+    .ranking-panel-header {
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ranking-tabs {
+        padding: 2px;
+    }
+
+    .ranking-tab {
+        min-height: 27px;
+        padding: 4px 8px;
+        font-size: 0.63rem;
+    }
+}

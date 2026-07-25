@@ -71,6 +71,39 @@ function renderTopList(array $items, string $server): void
     }
     echo '</div>';
 }
+function renderRankingPanel(
+    string $key,
+    string $label,
+    array $periods,
+    string $server
+): void {
+    $defaultPeriod = (string)array_key_first($periods);
+
+    echo '<article class="panel ranking-panel" data-ranking-panel="'.e($key).'">';
+    echo '<div class="ranking-panel-header">';
+    echo '<div class="panel-heading"><p>'.e($label).'</p><h2>Mest sedda</h2></div>';
+    echo '<div class="ranking-tabs" role="tablist" aria-label="Välj tidsperiod">';
+    foreach ($periods as $period => $_items) {
+        $period = (string)$period;
+        $active = $period === $defaultPeriod;
+        echo '<button type="button" class="ranking-tab'.($active ? ' is-active' : '').'"';
+        echo ' role="tab" aria-selected="'.($active ? 'true' : 'false').'"';
+        echo ' data-ranking-period="'.e($period).'">'.e($period).' dagar</button>';
+    }
+    echo '</div></div>';
+
+    foreach ($periods as $period => $items) {
+        $period = (string)$period;
+        $active = $period === $defaultPeriod;
+        echo '<div class="ranking-period'.($active ? ' is-active' : '').'"';
+        echo ' data-ranking-content="'.e($period).'"'.($active ? '' : ' hidden').'>';
+        renderTopList($items, $server);
+        echo '</div>';
+    }
+
+    echo '</article>';
+}
+
 function renderUsers(array $users): void
 {
     if (!$users) { echo '<p class="empty-state compact">Ingen statistik ännu.</p>'; return; }
@@ -116,9 +149,17 @@ function associativeRows(array $data, int $limit=5): array
 </section>
 
 <section class="dashboard-grid ranking-grid v2-ranking-grid" data-section="rankings">
+<?php
+renderRankingPanel('movies', 'FILMER', [
+    '7' => $topMovies7,
+    '30' => $topMovies30,
+], $jellyfinServer);
 
-<?php foreach ([['FILMER','Mest sedda · 7 dagar',$topMovies7],['FILMER','Mest sedda · 30 dagar',$topMovies30],['SERIER','Mest sedda · 7 dagar',$topSeries7],['SERIER','Mest sedda · 30 dagar',$topSeries30]] as [$kind,$title,$items]): ?><article class="panel"><div class="panel-heading"><p><?=$kind?></p><h2><?=$title?></h2></div><?php renderTopList($items,$jellyfinServer);?></article><?php endforeach; ?>
-
+renderRankingPanel('series', 'SERIER', [
+    '7' => $topSeries7,
+    '30' => $topSeries30,
+], $jellyfinServer);
+?>
 </section>
 
 <section class="v2-operations-grid" data-section="users">
@@ -139,6 +180,29 @@ function associativeRows(array $data, int $limit=5): array
 <dialog class="settings-modal"><button class="modal-close" type="button" aria-label="Stäng">×</button><h2>Visa sektioner</h2><div class="settings-list"><?php foreach(['overview'=>'Översikt','playback'=>'Uppspelning','rankings'=>'Topplistor','users'=>'Användare och uppspelning','activity'=>'Aktivitet och nytt','technical'=>'Biblioteksprofil','recent'=>'Senast tillagt'] as $key=>$label): ?><label><input type="checkbox" data-toggle-section="<?=$key?>" checked> <?=$label?></label><?php endforeach;?></div><button type="button" class="reset-settings">Återställ</button></dialog>
 <script>
 const itemModal=document.querySelector('.item-modal'), settingsModal=document.querySelector('.settings-modal');
+
+document.querySelectorAll('[data-ranking-panel]').forEach(panel => {
+    const tabs = [...panel.querySelectorAll('[data-ranking-period]')];
+    const contents = [...panel.querySelectorAll('[data-ranking-content]')];
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const selectedPeriod = tab.dataset.rankingPeriod;
+
+            tabs.forEach(currentTab => {
+                const isActive = currentTab === tab;
+                currentTab.classList.toggle('is-active', isActive);
+                currentTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            contents.forEach(content => {
+                const isActive = content.dataset.rankingContent === selectedPeriod;
+                content.classList.toggle('is-active', isActive);
+                content.hidden = !isActive;
+            });
+        });
+    });
+});
 document.querySelectorAll('.recent-item').forEach(button=>button.addEventListener('click',()=>{const item=JSON.parse(button.dataset.item); const bits=[item.Year,item.Container,item.Resolution,item.VideoCodec,item.AudioCodec,item.Size?formatBytes(item.Size):null].filter(Boolean); itemModal.querySelector('.modal-content').innerHTML=`<img src="image.php?id=${encodeURIComponent(item.Id)}" alt=""><div><p class="eyebrow">${item.Type==='Movie'?'FILM':'SERIE'}</p><h2>${escapeHtml(item.Name)}</h2><p class="modal-meta">${bits.map(escapeHtml).join(' · ')}</p>${item.Rating?`<p>★ ${item.Rating.toFixed(1)}</p>`:''}<p>${escapeHtml(item.Overview||'Ingen beskrivning tillgänglig.')}</p><a href="<?=e(rtrim($jellyfinServer,'/'))?>/web/#/details?id=${encodeURIComponent(item.Id)}" target="_blank" rel="noopener">Öppna i Jellyfin</a></div>`; itemModal.showModal();}));
 document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 document.querySelector('.settings-button').addEventListener('click',()=>settingsModal.showModal());
