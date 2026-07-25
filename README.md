@@ -28,8 +28,8 @@ web dashboard.
 
 - Movie, TV series, episode, and user totals
 - Playback count and watch time
-- Most-watched movies and TV series for 7 and 30 days
-- Most-active users
+- Most-played movies and TV series for 7 and 30 days
+- Most-played users
 - Daily watch-time chart
 - Playback-method and client statistics
 - Recently added media and library growth
