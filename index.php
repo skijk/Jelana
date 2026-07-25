@@ -305,9 +305,9 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
 <body>
 <header class="jellyfin-topbar">
     <div class="jellyfin-topbar-inner">
-        <img class="jellyfin-brand-logo"
+        <a class="jellyfin-brand-link" href="https://flix.inactive.se:8920" aria-label="Open Fulflix"><img class="jellyfin-brand-logo"
              src="https://inactive.se/fulflix/logo.png"
-             alt="Fulflix">
+             alt="Fulflix"></a>
         <nav class="jellyfin-nav" aria-label="Dashboard navigation">
             <a class="is-active" href="#overview">Overview</a>
             <a href="#most-watched">Most Watched</a>

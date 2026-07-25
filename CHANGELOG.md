@@ -20,6 +20,9 @@ versioning where practical.
 
 ### Changed
 
+- Made the Fulflix logo link to https://flix.inactive.se:8920 and repaired the top navigation anchors.
+
+
 - Added a Jellyfin-inspired Fulflix visual theme and top navigation without changing dashboard data or metrics.
 
 

@@ -1405,3 +1405,34 @@ a {
 #playback {
     scroll-margin-top: 76px;
 }
+
+
+.jellyfin-brand-link {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.jellyfin-brand-link:hover .jellyfin-brand-logo {
+    opacity: 0.86;
+}
+
+.jellyfin-brand-link:focus-visible {
+    outline: 2px solid rgba(211, 74, 50, 0.85);
+    outline-offset: 4px;
+}
+
+#overview,
+#most-watched,
+#users,
+#playback,
+.page-anchor {
+    scroll-margin-top: 76px;
+}
+
+.page-anchor {
+    height: 0;
+    width: 0;
+}
