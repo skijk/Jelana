@@ -20,6 +20,9 @@ versioning where practical.
 
 ### Changed
 
+- Changed Most Watched rankings to sort by total watch time first, with play count used only as a tiebreaker.
+
+
 - Increased KPI labels, KPI subtitles, section headings, ranking text, tabs, playback details, and lower-dashboard typography for better readability.
 
 

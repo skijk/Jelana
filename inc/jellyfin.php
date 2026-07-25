@@ -167,7 +167,7 @@ function getTopMovies(int $days, int $limit): array
             SUM(PlayDuration) AS Duration
         FROM sessions
         GROUP BY ItemId, ItemName
-        ORDER BY Plays DESC, Duration DESC
+        ORDER BY Duration DESC, Plays DESC
         LIMIT :limit
     ";
 
