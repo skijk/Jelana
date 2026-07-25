@@ -9,12 +9,20 @@ versioning where practical.
 
 ### Added
 
+- Added central configuration for branding, Jellyfin connection, Playback Reporting database, labelled media paths, cache directory, and timezone.
+- Removed installation-specific Fulflix URLs and branding from runtime source.
+- Added support for any number of labelled media-library paths in storage statistics.
+
+
 - MIT license.
 - Contribution and security guidelines.
 - GitHub issue and pull request templates.
 - EditorConfig and expanded Git ignore rules.
 
 ### Fixed
+
+- Fixed the storage summary card so it renders all configured `$mediaLibraries` labels and sizes instead of hardcoded Movies/TV keys.
+
 
 - Fixed the Most Watched navigation anchor and removed the non-functional menu icon.
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/inc/app.php';
 
 const POSTER_CACHE_MAX_AGE = 604800;
 const POSTER_MAX_WIDTH = 500;
@@ -78,13 +79,13 @@ if (!is_string($id) || preg_match('/^[a-fA-F0-9]{16,64}$/', $id) !== 1) {
     outputPlaceholder();
 }
 
-$cacheDirectory = '/var/cache/fulflix-stats/posters';
+$posterCacheDirectory = $cacheDirectory . '/posters';
 
-if (!is_dir($cacheDirectory)) {
-    @mkdir($cacheDirectory, 0770, true);
+if (!is_dir($posterCacheDirectory)) {
+    @mkdir($posterCacheDirectory, 0770, true);
 }
 
-$cacheFile = $cacheDirectory . '/' . strtolower($id) . '.img';
+$cacheFile = $posterCacheDirectory . '/' . strtolower($id) . '.img';
 $metadataFile = $cacheFile . '.json';
 $cacheTimestamp = is_file($cacheFile) ? filemtime($cacheFile) : false;
 $hasFreshCache = is_file($metadataFile)
@@ -143,7 +144,7 @@ if (
     outputPlaceholder();
 }
 
-if (is_dir($cacheDirectory)) {
+if (is_dir($posterCacheDirectory)) {
     writePosterCache(
         $cacheFile,
         $metadataFile,

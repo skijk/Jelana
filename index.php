@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-date_default_timezone_set('Europe/Stockholm');
-
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/inc/app.php';
 require_once __DIR__ . '/inc/jellyfin.php';
 require_once __DIR__ . '/inc/dashboard.php';
 
@@ -27,7 +26,7 @@ const DASHBOARD_SECTION_LABELS = [
 $dashboard = readDashboardCache();
 
 if ($dashboard === null) {
-    $dashboard = refreshDashboardCache($mediaPaths ?? []);
+    $dashboard = refreshDashboardCache($mediaLibraries);
 }
 
 extract($dashboard, EXTR_SKIP);
@@ -299,15 +298,27 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fulflix Stats</title>
+    <title><?= e($appName) ?> Stats</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header class="jellyfin-topbar">
     <div class="jellyfin-topbar-inner">
-        <a class="jellyfin-brand-link" href="https://flix.inactive.se:8920" aria-label="Open Fulflix"><img class="jellyfin-brand-logo"
-             src="https://inactive.se/fulflix/logo.png"
-             alt="Fulflix"></a>
+        <?php if ($brandHomeUrl !== ''): ?>
+            <a class="jellyfin-brand-link" href="<?= e($brandHomeUrl) ?>" aria-label="Open <?= e($appName) ?>">
+        <?php else: ?>
+            <span class="jellyfin-brand-link">
+        <?php endif; ?>
+        <?php if ($brandLogoUrl !== ''): ?>
+            <img class="jellyfin-brand-logo" src="<?= e($brandLogoUrl) ?>" alt="<?= e($appName) ?>">
+        <?php else: ?>
+            <span class="jellyfin-brand-text"><?= e($appName) ?></span>
+        <?php endif; ?>
+        <?php if ($brandHomeUrl !== ''): ?>
+            </a>
+        <?php else: ?>
+            </span>
+        <?php endif; ?>
         <nav class="jellyfin-nav" aria-label="Dashboard navigation">
             <a class="is-active" href="#overview">Overview</a>
             <a href="#most-watched">Most Played</a>
@@ -321,7 +332,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     <header class="site-header">
         <div>
             <p class="eyebrow">JELLYFIN LIBRARY</p>
-            <h1>Fulflix Stats</h1>
+            <h1><?= e($appName) ?> Stats</h1>
         </div>
 
         <div class="header-tools">
@@ -362,8 +373,17 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
                 </span>
                 <span class="stat-label">Storage</span>
                 <span class="storage-split">
-                    Movies <?= e(formatBytes($storage['Movies'])) ?>
-                    · TV <?= e(formatBytes($storage['TV'])) ?>
+                    <?php
+                    $storageParts = [];
+
+                    foreach (($storage['Libraries'] ?? []) as $libraryLabel => $libraryBytes) {
+                        $storageParts[] = e((string) $libraryLabel)
+                            . ' '
+                            . e(formatBytes(is_int($libraryBytes) ? $libraryBytes : null));
+                    }
+
+                    echo implode(' · ', $storageParts);
+                    ?>
                 </span>
             </article>
         </div>
@@ -570,7 +590,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     <section class="panel recent-panel v2-recent-panel" data-section="recent">
         <div class="panel-heading">
             <p>RECENTLY ADDED</p>
-            <h2>New in Fulflix</h2>
+            <h2>New in <?= e($appName) ?></h2>
         </div>
 
         <div class="recent-grid">

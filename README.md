@@ -28,6 +28,7 @@ JavaScript. Docker and frontend frameworks are not required.
 - Local poster proxy and cache
 - Hourly JSON dashboard cache with locking and atomic writes
 - Responsive interface with configurable sections
+- Central configuration for branding, paths, database, cache, and timezone
 
 ## Screenshots
 
@@ -60,9 +61,11 @@ the dashboard is published.
 ├── css/
 │   └── style.css
 ├── inc/
+│   ├── app.php
 │   ├── dashboard.php
 │   └── jellyfin.php
 ├── CHANGELOG.md
+├── CONFIGURATION.md
 ├── CONTRIBUTING.md
 ├── HOURLY-CACHE-INSTALL.md
 ├── LICENSE
@@ -93,32 +96,43 @@ Create the local configuration:
 cp config.example.php config.php
 ```
 
-Edit `config.php`:
+Edit **only `config.php`** for installation-specific values:
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-$jellyfinServer = 'https://jellyfin.example.com';
+$appName = 'My Jellyfin';
+
+$jellyfinServer = 'https://jellyfin.example.com:8920';
 $apiKey = 'YOUR_API_KEY';
 
-$mediaPaths = [
-    '/mnt/media/movies',
-    '/mnt/media/tv',
+$brandHomeUrl = $jellyfinServer;
+$brandLogoUrl = ''; // Optional logo URL
+
+$playbackDatabase = '/var/lib/jellyfin/data/playback_reporting.db';
+
+$mediaLibraries = [
+    'Movies' => '/mnt/media/movies',
+    'TV Series' => '/mnt/media/tv',
+    // 'Anime' => '/mnt/media/anime',
 ];
+
+$cacheDirectory = '/var/cache/fulflix-stats';
+$timezone = 'Europe/Stockholm';
 ```
 
-The Playback Reporting database path is defined by `PLAYBACK_DATABASE` in
-`inc/jellyfin.php`. Change that constant if Jellyfin stores the database
-elsewhere.
+The array keys in `$mediaLibraries` become the storage labels on the dashboard.
+Any number of media directories can be configured without editing application
+source code.
 
 The web server and refresh job require:
 
 - Read access to `config.php`
 - Read access to the Playback Reporting database
 - Read access to the configured media directories
-- Write access to the system temporary directory used for Fulflix caches
+- Write access to the configured cache directory
 
 ## Create the Cache Directory
 

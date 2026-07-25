@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-const PLAYBACK_DATABASE = '/var/lib/jellyfin/data/playback_reporting.db';
 const PLAYBACK_SESSION_GAP_SECONDS = 1800;
 
 function jellyfin(string $endpoint): array
@@ -55,19 +54,21 @@ function getLibraryCounts(): array
 
 function playbackDb(): ?PDO
 {
+    global $playbackDatabase;
+
     static $pdo = false;
 
     if ($pdo instanceof PDO) {
         return $pdo;
     }
 
-    if (!is_readable(PLAYBACK_DATABASE)) {
+    if (!is_readable($playbackDatabase)) {
         error_log('Playback Reporting database is not readable.');
         return null;
     }
 
     try {
-        $pdo = new PDO('sqlite:' . PLAYBACK_DATABASE, null, null, [
+        $pdo = new PDO('sqlite:' . $playbackDatabase, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
@@ -514,9 +515,11 @@ function getLibraryStorageBytes(array $paths): ?int
 }
 
 
-function cacheRemember(string $key, int $ttl, callable $producer): mixed
+function cacheRemember(string $key, int $ttl, callable $producer, ?string $directory = null): mixed
 {
-    $directory = sys_get_temp_dir() . '/fulflix-stats-cache';
+    global $cacheDirectory;
+
+    $directory ??= $cacheDirectory . '/data';
 
     if (!is_dir($directory) && !@mkdir($directory, 0770, true) && !is_dir($directory)) {
         return $producer();
@@ -544,32 +547,43 @@ function cacheRemember(string $key, int $ttl, callable $producer): mixed
     return $value;
 }
 
-function getLibraryStorageBreakdown(array $paths): array
+function getLibraryStorageBreakdown(array $libraries): array
 {
-    $result = ['Movies' => null, 'TV' => null, 'Total' => null];
-    $valid = array_values(array_filter($paths, static fn($path): bool => is_string($path) && $path !== '' && is_dir($path)));
+    global $cacheDirectory;
 
-    if (!$valid || !function_exists('shell_exec')) {
+    $result = ['Libraries' => [], 'Total' => null];
+    $valid = [];
+
+    foreach ($libraries as $label => $path) {
+        if (is_string($path) && $path !== '' && is_dir($path)) {
+            $valid[(string) $label] = $path;
+        }
+    }
+
+    if ($valid === [] || !function_exists('shell_exec')) {
         return $result;
     }
 
-    return cacheRemember('library-storage-breakdown', 3600, static function () use ($valid): array {
+    $cacheKey = 'library-storage-' . hash('sha256', (string) json_encode($valid));
+
+    return cacheRemember($cacheKey, 3600, static function () use ($valid): array {
         $values = [];
-        foreach ($valid as $path) {
+
+        foreach ($valid as $label => $path) {
             $output = shell_exec('du -sb -- ' . escapeshellarg($path) . ' 2>/dev/null');
-            $values[] = is_string($output) && preg_match('/^(\d+)/', trim($output), $matches) ? (int)$matches[1] : null;
+            $values[$label] = is_string($output)
+                && preg_match('/^(\\d+)/', trim($output), $matches)
+                    ? (int) $matches[1]
+                    : null;
         }
 
-        $movies = $values[0] ?? null;
-        $tv = $values[1] ?? null;
-        $known = array_values(array_filter($values, static fn($value): bool => is_int($value)));
+        $known = array_filter($values, static fn($value): bool => is_int($value));
 
         return [
-            'Movies' => $movies,
-            'TV' => $tv,
+            'Libraries' => $values,
             'Total' => count($known) === count($values) ? array_sum($known) : null,
         ];
-    });
+    }, $cacheDirectory . '/data');
 }
 
 function getPlaybackMethodStats(int $days = 30): array

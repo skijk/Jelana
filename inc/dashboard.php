@@ -7,7 +7,9 @@ const DASHBOARD_CACHE_MAX_AGE = 3600;
 
 function dashboardCacheDirectory(): string
 {
-    return '/var/cache/fulflix-stats';
+    global $cacheDirectory;
+
+    return $cacheDirectory;
 }
 
 function dashboardCacheFile(): string
@@ -53,11 +55,11 @@ function dashboardCacheAge(): ?int
     return $modified === false ? null : max(0, time() - $modified);
 }
 
-function buildDashboardData(array $mediaPaths): array
+function buildDashboardData(array $mediaLibraries): array
 {
     return [
         'counts' => getLibraryCounts(),
-        'storage' => getLibraryStorageBreakdown($mediaPaths),
+        'storage' => getLibraryStorageBreakdown($mediaLibraries),
         'newItems' => getNewItemCounts(),
         'playback30' => getPlaybackSummary(30),
         'playbackAll' => getPlaybackSummary(null),
@@ -108,7 +110,7 @@ function writeDashboardCache(array $value): bool
     return true;
 }
 
-function refreshDashboardCache(array $mediaPaths, bool $waitForLock = true): array
+function refreshDashboardCache(array $mediaLibraries, bool $waitForLock = true): array
 {
     if (!ensureDashboardCacheDirectory()) {
         throw new RuntimeException('Could not create the dashboard cache directory.');
@@ -134,7 +136,7 @@ function refreshDashboardCache(array $mediaPaths, bool $waitForLock = true): arr
     }
 
     try {
-        $value = buildDashboardData($mediaPaths);
+        $value = buildDashboardData($mediaLibraries);
 
         if (!writeDashboardCache($value)) {
             throw new RuntimeException('Could not write the dashboard cache file.');
