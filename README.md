@@ -6,7 +6,12 @@ Jelana presents playback history, watch time, active users, library statistics,
 media profiles, recently added items, and play-count rankings in a responsive
 web dashboard.
 
+
 ## Screenshots
+
+<img src="docs/hero-dashboard.png" alt="Jelana dashboard overview" width="100%">
+
+<br><br>
 
 <table>
   <tr>
@@ -22,7 +27,6 @@ web dashboard.
     <td width="50%"><img src="docs/screenshot-6.png" alt="Jelana video codecs"></td>
   </tr>
 </table>
-
 
 ## Highlights
 
