@@ -1650,3 +1650,5 @@ button[data-period] {
         flex-direction: column;
     }
 }
+
+.kpi-icon{font-size:2rem;line-height:1;margin-bottom:.35rem;opacity:.9}

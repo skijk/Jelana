@@ -306,11 +306,12 @@ function associativeRows(array $data, int $limit = 5): array
 }
 
 $overviewCards = [
-    ['key' => 'MovieCount', 'label' => 'Movies'],
-    ['key' => 'SeriesCount', 'label' => 'TV Series'],
-    ['key' => 'EpisodeCount', 'label' => 'Episodes'],
-    ['key' => 'UserCount', 'label' => 'Users'],
+    ['key'=>'MovieCount','label'=>'Movies','icon'=>'🎬'],
+    ['key'=>'SeriesCount','label'=>'TV Series','icon'=>'📺'],
+    ['key'=>'EpisodeCount','label'=>'Episodes','icon'=>'🎞️'],
+    ['key'=>'UserCount','label'=>'Users','icon'=>'👥'],
 ];
+
 
 $maxActivityDuration = max(1, ...array_column($activity, 'Duration'));
 $today = (new DateTimeImmutable('today'))->format('Y-m-d');
@@ -382,6 +383,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         <div class="stats-grid stats-grid-five">
             <?php foreach ($overviewCards as $card): ?>
                 <article class="stat-card">
+                    <div class="kpi-icon"><?= e($card["icon"] ?? "") ?></div>
                     <span class="stat-value">
                         <?= formatNumber((int) ($counts[$card['key']] ?? 0)) ?>
                     </span>
