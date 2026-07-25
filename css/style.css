@@ -979,3 +979,58 @@ h1 {
         padding-inline: 8px;
     }
 }
+
+
+/* Most watched users panel */
+.user-panel {
+    grid-column: span 2;
+}
+
+.user-panel .user-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px 8px;
+}
+
+.user-panel .user-list li + li {
+    margin-top: 0;
+}
+
+.user-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.user-copy small {
+    color: var(--muted);
+    font-size: .6rem;
+}
+
+.user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-count {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.user-period[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 980px) {
+    .user-panel {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 620px) {
+    .user-panel .user-list {
+        grid-template-columns: 1fr;
+    }
+}

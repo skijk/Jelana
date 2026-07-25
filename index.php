@@ -185,15 +185,57 @@ function renderUsers(array $users): void
 
     echo '<ol class="user-list">';
 
-    foreach ($users as $index => $user) {
+    foreach (array_slice($users, 0, 10) as $index => $user) {
+        $plays = (int) ($user['Plays'] ?? 0);
+        $duration = (int) ($user['Duration'] ?? 0);
+
         echo '<li>';
         echo '<span class="user-rank">' . ($index + 1) . '</span>';
-        echo '<span class="user-name">' . e((string) $user['Name']) . '</span>';
-        echo '<span class="user-count">' . formatNumber((int) $user['Plays']) . '</span>';
+        echo '<span class="user-copy">';
+        echo '<strong class="user-name">' . e((string) ($user['Name'] ?? 'Unknown user')) . '</strong>';
+        echo '<small>' . formatNumber($plays) . ' plays</small>';
+        echo '</span>';
+        echo '<span class="user-count">' . e(formatDuration($duration)) . '</span>';
         echo '</li>';
     }
 
     echo '</ol>';
+}
+
+function renderUserPanel(array $periods): void
+{
+    $defaultPeriod = (string) array_key_first($periods);
+
+    echo '<article class="panel user-panel" data-user-panel>';
+    echo '<div class="ranking-panel-header">';
+    echo '<div class="panel-heading"><p>USERS</p><h2>Most watched</h2></div>';
+    echo '<div class="ranking-tabs" role="tablist" aria-label="Select time range">';
+
+    foreach ($periods as $period => $_users) {
+        $period = (string) $period;
+        $isActive = $period === $defaultPeriod;
+
+        echo '<button type="button" class="ranking-tab' . ($isActive ? ' is-active' : '') . '"';
+        echo ' role="tab" aria-selected="' . ($isActive ? 'true' : 'false') . '"';
+        echo ' data-user-period="' . e($period) . '">' . e($period) . ' days</button>';
+    }
+
+    echo '</div>';
+    echo '</div>';
+
+    foreach ($periods as $period => $users) {
+        $period = (string) $period;
+        $isActive = $period === $defaultPeriod;
+
+        echo '<div class="user-period' . ($isActive ? ' is-active' : '') . '"';
+        echo ' data-user-content="' . e($period) . '"' . ($isActive ? '' : ' hidden') . '>';
+
+        renderUsers($users);
+
+        echo '</div>';
+    }
+
+    echo '</article>';
 }
 
 function renderBreakdown(array $rows, int $limit = 6): void
@@ -466,21 +508,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     </section>
 
     <section class="v2-operations-grid" data-section="users">
-        <article class="panel">
-            <div class="panel-heading">
-                <p>USERS</p>
-                <h2>Most active · 7 days</h2>
-            </div>
-            <?php renderUsers($activeUsers7); ?>
-        </article>
-
-        <article class="panel">
-            <div class="panel-heading">
-                <p>USERS</p>
-                <h2>Most active · 30 days</h2>
-            </div>
-            <?php renderUsers($activeUsers30); ?>
-        </article>
+        <?php renderUserPanel(['7' => $topUsers7, '30' => $topUsers30]); ?>
 
         <article class="panel">
             <div class="panel-heading">
@@ -629,6 +657,15 @@ document.querySelectorAll('[data-ranking-panel]').forEach((panel) => {
         '[data-ranking-period]',
         '[data-ranking-content]',
         'rankingPeriod'
+    );
+});
+
+document.querySelectorAll('[data-user-panel]').forEach((panel) => {
+    configureTabs(
+        panel,
+        '[data-user-period]',
+        '[data-user-content]',
+        'userPeriod'
     );
 });
 

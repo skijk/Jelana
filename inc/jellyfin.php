@@ -330,7 +330,7 @@ function jellyfinUsers(): array
     return $users;
 }
 
-function getTopActiveUsers(int $days, int $limit): array
+function getTopWatchedUsers(int $days, int $limit): array
 {
     $pdo = playbackDb();
 
@@ -345,7 +345,7 @@ function getTopActiveUsers(int $days, int $limit): array
             SUM(PlayDuration) AS Duration
         FROM sessions
         GROUP BY UserId
-        ORDER BY Plays DESC, Duration DESC
+        ORDER BY Duration DESC, Plays DESC
         LIMIT :limit
     ";
 
@@ -358,11 +358,11 @@ function getTopActiveUsers(int $days, int $limit): array
     $result = [];
 
     foreach ($stmt->fetchAll() ?: [] as $row) {
-        $id = (string)$row['UserId'];
+        $id = (string) $row['UserId'];
         $result[] = [
             'Name' => $names[$id] ?? 'Unknown user',
-            'Plays' => (int)$row['Plays'],
-            'Duration' => (int)$row['Duration'],
+            'Plays' => (int) $row['Plays'],
+            'Duration' => (int) $row['Duration'],
         ];
     }
 

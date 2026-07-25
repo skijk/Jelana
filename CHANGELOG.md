@@ -16,6 +16,9 @@ versioning where practical.
 
 ### Changed
 
+- Replaced separate active-user panels with a tabbed **Most watched** top-10 user ranking for 7 and 30 days.
+
+
 - Moved dashboard and poster caches to `/var/cache/fulflix-stats` to avoid systemd `PrivateTmp` isolation.
 
 - Standardized all interface terminology in English.
