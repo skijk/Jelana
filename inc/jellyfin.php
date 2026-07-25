@@ -323,7 +323,7 @@ function jellyfinUsers(): array
 
     foreach (jellyfin('/Users') as $user) {
         if (isset($user['Id'])) {
-            $users[(string)$user['Id']] = (string)($user['Name'] ?? 'Okänd users');
+            $users[(string)$user['Id']] = (string)($user['Name'] ?? 'Unknown user');
         }
     }
 
@@ -360,7 +360,7 @@ function getTopActiveUsers(int $days, int $limit): array
     foreach ($stmt->fetchAll() ?: [] as $row) {
         $id = (string)$row['UserId'];
         $result[] = [
-            'Name' => $names[$id] ?? 'Okänd users',
+            'Name' => $names[$id] ?? 'Unknown user',
             'Plays' => (int)$row['Plays'],
             'Duration' => (int)$row['Duration'],
         ];
@@ -563,7 +563,7 @@ function getPlaybackMethodStats(int $days = 30): array
     $pdo = playbackDb();
     if (!$pdo) return [];
 
-    $stmt = $pdo->prepare("SELECT COALESCE(NULLIF(PlaybackMethod, ''), 'Okänt') AS Label, COUNT(*) AS Count FROM PlaybackActivity WHERE DateCreated >= :since GROUP BY Label ORDER BY Count DESC");
+    $stmt = $pdo->prepare("SELECT COALESCE(NULLIF(PlaybackMethod, ''), 'Unknown') AS Label, COUNT(*) AS Count FROM PlaybackActivity WHERE DateCreated >= :since GROUP BY Label ORDER BY Count DESC");
     $stmt->bindValue(':since', sinceDate($days));
     $stmt->execute();
     return $stmt->fetchAll() ?: [];
@@ -574,7 +574,7 @@ function getClientStats(int $days = 30, int $limit = 6): array
     $pdo = playbackDb();
     if (!$pdo) return [];
 
-    $stmt = $pdo->prepare("SELECT COALESCE(NULLIF(ClientName, ''), NULLIF(DeviceName, ''), 'Okänd') AS Label, COUNT(*) AS Count FROM PlaybackActivity WHERE DateCreated >= :since GROUP BY Label ORDER BY Count DESC LIMIT :limit");
+    $stmt = $pdo->prepare("SELECT COALESCE(NULLIF(ClientName, ''), NULLIF(DeviceName, ''), 'Unknown') AS Label, COUNT(*) AS Count FROM PlaybackActivity WHERE DateCreated >= :since GROUP BY Label ORDER BY Count DESC LIMIT :limit");
     $stmt->bindValue(':since', sinceDate($days));
     $stmt->bindValue(':limit', max(1, $limit), PDO::PARAM_INT);
     $stmt->execute();
@@ -603,7 +603,7 @@ function getRecentItems(int $limit = 8): array
 
         return [
             'Id' => (string)($item['Id'] ?? ''),
-            'Name' => (string)($item['Name'] ?? 'Okänd titel'),
+            'Name' => (string)($item['Name'] ?? 'Unknown title'),
             'Type' => (string)($item['Type'] ?? ''),
             'Year' => (string)($item['ProductionYear'] ?? ''),
             'Overview' => (string)($item['Overview'] ?? ''),

@@ -10,7 +10,7 @@ function outputPlaceholder(): never
     header('Cache-Control: public, max-age=3600');
     header('X-Content-Type-Options: nosniff');
     echo <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750"><rect width="500" height="750" fill="#292e33"/><rect x="40" y="40" width="420" height="670" rx="24" fill="#202428" stroke="#3a4249" stroke-width="4"/><text x="250" y="350" text-anchor="middle" fill="#7ec8f5" font-family="Arial,sans-serif" font-size="72">🎬</text><text x="250" y="420" text-anchor="middle" fill="#b8c0c7" font-family="Arial,sans-serif" font-size="28">Ingen poster</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750"><rect width="500" height="750" fill="#292e33"/><rect x="40" y="40" width="420" height="670" rx="24" fill="#202428" stroke="#3a4249" stroke-width="4"/><text x="250" y="350" text-anchor="middle" fill="#7ec8f5" font-family="Arial,sans-serif" font-size="72">🎬</text><text x="250" y="420" text-anchor="middle" fill="#b8c0c7" font-family="Arial,sans-serif" font-size="28">No poster available</text></svg>
 SVG;
     exit;
 }
