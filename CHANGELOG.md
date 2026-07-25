@@ -16,6 +16,9 @@ versioning where practical.
 
 ### Changed
 
+- Increased typography and spacing across lower dashboard panels, especially Playback Method and Media Profile, without changing the top summary rows.
+
+
 - Replaced separate active-user panels with a tabbed **Most watched** top-10 user ranking for 7 and 30 days.
 
 
