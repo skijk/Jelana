@@ -27,9 +27,8 @@ web dashboard.
 
 ## Screenshot
 
-Additional screenshots are available in [SCREENSHOTS.md](SCREENSHOTS.md).
 
-
+Additional unmodified screenshots are available in [SCREENSHOTS.md](SCREENSHOTS.md).
 ![Jelana dashboard](docs/dashboard.png)
 
 

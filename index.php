@@ -120,6 +120,28 @@ function percentage(int $count, int $total): string
     return number_format(($count / $total) * 100, 0, '.', ',') . '%';
 }
 
+
+function renderOverviewIcon(string $key): string
+{
+    $paths = [
+        'MovieCount' => '<path d="M4 7h16v13H4z"/><path d="m4 7 3-4h4L8 7m4 0 3-4h4l-3 4"/><path d="m10 12 5 3-5 3z"/>',
+        'SeriesCount' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 22h8M12 19v3M8 2l4 3 4-3"/>',
+        'EpisodeCount' => '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 2h8M8 22h8M9 9h6M9 13h6M9 17h4"/>',
+        'UserCount' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+        'Storage' => '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/>',
+    ];
+
+    if (!isset($paths[$key])) {
+        return '';
+    }
+
+    return '<span class="overview-icon" aria-hidden="true">'
+        . '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        . 'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+        . $paths[$key]
+        . '</svg></span>';
+}
+
 function renderTopList(array $items, string $server): void
 {
     if ($items === []) {
@@ -306,12 +328,11 @@ function associativeRows(array $data, int $limit = 5): array
 }
 
 $overviewCards = [
-    ['key'=>'MovieCount','label'=>'Movies','icon'=>'🎬'],
-    ['key'=>'SeriesCount','label'=>'TV Series','icon'=>'📺'],
-    ['key'=>'EpisodeCount','label'=>'Episodes','icon'=>'🎞️'],
-    ['key'=>'UserCount','label'=>'Users','icon'=>'👥'],
+    ['key' => 'MovieCount', 'label' => 'Movies'],
+    ['key' => 'SeriesCount', 'label' => 'TV Series'],
+    ['key' => 'EpisodeCount', 'label' => 'Episodes'],
+    ['key' => 'UserCount', 'label' => 'Users'],
 ];
-
 
 $maxActivityDuration = max(1, ...array_column($activity, 'Duration'));
 $today = (new DateTimeImmutable('today'))->format('Y-m-d');
@@ -383,19 +404,28 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         <div class="stats-grid stats-grid-five">
             <?php foreach ($overviewCards as $card): ?>
                 <article class="stat-card">
-                    <div class="kpi-icon"><?= e($card["icon"] ?? "") ?></div>
-                    <span class="stat-value">
-                        <?= formatNumber((int) ($counts[$card['key']] ?? 0)) ?>
-                    </span>
-                    <span class="stat-label"><?= e($card['label']) ?></span>
+                    <div class="overview-card-content">
+                        <?= renderOverviewIcon((string) $card['key']) ?>
+                        <div class="overview-card-copy">
+                            <span class="stat-value">
+                                <?= formatNumber((int) ($counts[$card['key']] ?? 0)) ?>
+                            </span>
+                            <span class="stat-label"><?= e($card['label']) ?></span>
+                        </div>
+                    </div>
                 </article>
             <?php endforeach; ?>
 
             <article class="stat-card storage-card">
-                <span class="stat-value stat-value-small">
-                    <?= e(formatBytes($storage['Total'])) ?>
-                </span>
-                <span class="stat-label">Storage</span>
+                <div class="overview-card-content">
+                    <?= renderOverviewIcon('Storage') ?>
+                    <div class="overview-card-copy">
+                        <span class="stat-value stat-value-small">
+                            <?= e(formatBytes($storage['Total'])) ?>
+                        </span>
+                        <span class="stat-label">Storage</span>
+                    </div>
+                </div>
                 <span class="storage-split">
                     <?php
                     $storageParts = [];
