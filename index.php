@@ -6,31 +6,23 @@ date_default_timezone_set('Europe/Stockholm');
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/inc/jellyfin.php';
+require_once __DIR__ . '/inc/dashboard.php';
 
-$dashboard = cacheRemember('dashboard', 300, static function () use ($mediaPaths): array {
-    return [
-        'counts' => getLibraryCounts(),
-        'storage' => getLibraryStorageBreakdown($mediaPaths ?? []),
-        'newItems' => getNewItemCounts(),
-        'playback30' => getPlaybackSummary(30),
-        'playbackAll' => getPlaybackSummary(null),
-        'topMovies7' => getTopMovies(7, 10),
-        'topMovies30' => getTopMovies(30, 10),
-        'topSeries7' => getTopSeries(7, 10),
-        'topSeries30' => getTopSeries(30, 10),
-        'activeUsers7' => getTopActiveUsers(7, 6),
-        'activeUsers30' => getTopActiveUsers(30, 6),
-        'activity' => getDailyActivity(30),
-        'methods' => getPlaybackMethodStats(30),
-        'clients' => getClientStats(30, 6),
-        'recent' => getRecentItems(8),
-        'mediaProfile' => getLibraryMediaProfile(),
-        'updatedAt' => (new DateTimeImmutable('now'))->format(DateTimeInterface::ATOM),
-    ];
-});
+/*
+ * Vanliga sidvisningar läser endast färdig cache och frågar därför varken
+ * Jellyfin-API:t eller Playback Reporting-databasen.
+ *
+ * Första körningen bygger cachen en gång om cronjobbet ännu inte hunnit köras.
+ */
+$dashboard = readDashboardCache();
+
+if ($dashboard === null) {
+    $dashboard = refreshDashboardCache($mediaPaths ?? []);
+}
 
 extract($dashboard, EXTR_SKIP);
 $updatedAt = new DateTimeImmutable((string)$updatedAt);
+$cacheAge = dashboardCacheAge();
 
 function e(?string $value): string { return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8'); }
 function formatNumber(int|float $value): string { return number_format((float)$value, 0, ',', ' '); }
@@ -129,7 +121,7 @@ function associativeRows(array $data, int $limit=5): array
 ?>
 <!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fulflix Stats</title><link rel="stylesheet" href="css/style.css"></head>
 <body><main class="page-shell">
-<header class="site-header"><div><p class="eyebrow">JELLYFIN-BIBLIOTEKET</p><h1>Fulflix Stats</h1></div><div class="header-tools"><button class="settings-button" type="button" aria-label="Anpassa dashboard" title="Anpassa dashboard">⚙</button><div class="status-pill" title="Dashboarddata cachelagras i fem minuter"><span class="status-dot"></span><span class="status-text"><strong>Cachedata</strong><small>Uppdaterad <?=e($updatedAt->format('H:i'))?></small></span></div></div></header>
+<header class="site-header"><div><p class="eyebrow">JELLYFIN-BIBLIOTEKET</p><h1>Fulflix Stats</h1></div><div class="header-tools"><button class="settings-button" type="button" aria-label="Anpassa dashboard" title="Anpassa dashboard">⚙</button><div class="status-pill" title="Dashboarddata uppdateras högst en gång i timmen av cronjobbet"><span class="status-dot"></span><span class="status-text"><strong>Cachedata</strong><small>Uppdaterad <?=e($updatedAt->format('H:i'))?></small></span></div></div></header>
 
 
 <section class="v2-kpi-grid" data-section="overview">
