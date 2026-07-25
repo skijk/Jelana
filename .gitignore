@@ -1,0 +1,21 @@
+# Local configuration
+config.php
+
+# Local database
+*.sqlite
+*.db
+
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+tmp/
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
