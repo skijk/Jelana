@@ -1,16 +1,13 @@
 <?php
 
-// The URL and API for your Jellyfin installation
-$jellyfinServer = "https://JELLYFIN-URL:PORT";
-$apiKey = "YOUR_API_KEY";
+declare(strict_types=1);
 
+// Jellyfin server URL and API key.
+$jellyfinServer = 'https://JELLYFIN-URL:PORT';
+$apiKey = 'YOUR_API_KEY';
 
-// Timeout in seconds
-$requestTimeout = 10;
-
-
-// Path to your libraries on the disk/filesystem
+// Media directories included in storage calculations.
 $mediaPaths = [
-    "/mnt/media/movies",
-    "/mnt/media/tv",
+    '/mnt/media/movies',
+    '/mnt/media/tv',
 ];

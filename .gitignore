@@ -1,21 +1,31 @@
-# Local configuration
-config.php
+# Local configuration and secrets
+/config.php
+.env
+.env.*
 
-# Local database
-*.sqlite
-*.db
-
-# Logs
-logs/
+# Runtime data and caches
 *.log
+*.lock
+*.tmp
+/cache/
+/tmp/
 
-# Cache
-cache/
-tmp/
+# SQLite runtime files
+*.db-shm
+*.db-wal
 
-# IDE
-.vscode/
-.idea/
-
-# macOS
+# Editor and operating-system files
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependency directories, if introduced later
+/vendor/
+/node_modules/
+
+# Test and coverage output
+.phpunit.cache/
+coverage/

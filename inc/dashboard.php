@@ -7,7 +7,7 @@ const DASHBOARD_CACHE_MAX_AGE = 3600;
 
 function dashboardCacheDirectory(): string
 {
-    return sys_get_temp_dir() . '/fulflix-stats-cache';
+    return '/var/cache/fulflix-stats';
 }
 
 function dashboardCacheFile(): string

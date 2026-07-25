@@ -1,42 +1,60 @@
 # Fulflix Stats
 
-Fulflix Stats is a lightweight, self-hosted statistics dashboard for Jellyfin.
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4)
+![Jellyfin](https://img.shields.io/badge/Jellyfin-dashboard-00A4DC)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-It provides a compact overview of library totals, playback activity, watch time, top movies and TV series, active users, playback methods, client usage, recently added media, storage usage, and media profile information.
+**A lightweight, cache-driven statistics dashboard for Jellyfin.**
 
-The project uses PHP, Apache, SQLite, and plain JavaScript. It does not require Docker or a JavaScript framework.
+Fulflix Stats presents playback history, watch time, active users, library
+growth, storage usage, media formats, and recently added titles in a compact
+responsive interface. Normal page views read a prepared JSON cache instead of
+querying Jellyfin and Playback Reporting on every request.
 
-## Features
+The application uses PHP, SQLite, Apache-compatible hosting, and plain
+JavaScript. Docker and frontend frameworks are not required.
 
-- Responsive dashboard for desktop and mobile
-- Movie, TV series, and episode counts
-- Playback totals and accumulated watch time
-- Top movies and TV series for 7- and 30-day periods
-- Active user rankings
-- Daily playback activity
-- Playback method statistics
-- Client usage statistics
-- Recently added media
-- Storage breakdown
-- Video and audio profile summary
-- Local image proxy and cache
-- Hourly JSON dashboard cache
-- No direct database or API queries during normal page views
+## Highlights
+
+- Movie, TV series, episode, and user totals
+- Playback count and watch time
+- Most-watched movies and TV series for 7 and 30 days
+- Most-active users
+- Daily watch-time chart
+- Playback-method and client statistics
+- Recently added media and library growth
+- Storage usage by media library
+- Video codec, resolution, and audio codec summaries
+- Local poster proxy and cache
+- Hourly JSON dashboard cache with locking and atomic writes
+- Responsive interface with configurable sections
+
+## Screenshots
+
+Add project screenshots under a `docs/` directory and reference them here when
+the dashboard is published.
 
 ## Requirements
 
 - PHP 8.1 or later
-- Apache or another PHP-capable web server
-- PHP extensions: `pdo_sqlite`, `curl`, `json`, and `mbstring`
-- Access to a Jellyfin server
+- Apache, Nginx with PHP-FPM, or another PHP-capable web server
+- PHP extensions:
+  - `curl`
+  - `json`
+  - `mbstring`
+  - `pdo_sqlite`
+- Jellyfin server access
 - Jellyfin Playback Reporting plugin
 - Read access to the Playback Reporting SQLite database
-- Optional read access to media paths for storage calculations
+- Read access to media paths when storage totals are enabled
 
 ## Project Structure
 
 ```text
 .
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── PULL_REQUEST_TEMPLATE.md
 ├── bin/
 │   └── refresh-dashboard.php
 ├── css/
@@ -44,19 +62,24 @@ The project uses PHP, Apache, SQLite, and plain JavaScript. It does not require 
 ├── inc/
 │   ├── dashboard.php
 │   └── jellyfin.php
-├── index.php
-├── image.php
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── HOURLY-CACHE-INSTALL.md
+├── LICENSE
+├── README.md
+├── SECURITY.md
 ├── config.example.php
 ├── fulflix-stats.cron.example
-├── HOURLY-CACHE-INSTALL.md
-└── README.md
+├── image.php
+└── index.php
 ```
 
-`config.php` is intentionally excluded from version control because it may contain local paths, server addresses, and API keys.
+`config.php` is excluded from version control because it contains local paths,
+server details, and an API key.
 
 ## Installation
 
-Clone or copy the project into your web root:
+Clone or copy the project into the web root:
 
 ```bash
 cd /var/www/html
@@ -64,47 +87,65 @@ git clone <repository-url> fulflix-stats
 cd fulflix-stats
 ```
 
-Copy the example configuration:
+Create the local configuration:
 
 ```bash
 cp config.example.php config.php
 ```
 
-Edit `config.php` and configure:
+Edit `config.php`:
 
-- Jellyfin server URL
-- Jellyfin API key
-- Playback Reporting database path
-- Media paths used for storage calculations
+```php
+<?php
 
-Make sure the web server user can read the required files and directories.
+declare(strict_types=1);
 
-## Dashboard Cache
+$jellyfinServer = 'https://jellyfin.example.com';
+$apiKey = 'YOUR_API_KEY';
 
-Normal page views do not query Jellyfin or the Playback Reporting database.
+$mediaPaths = [
+    '/mnt/media/movies',
+    '/mnt/media/tv',
+];
+```
 
-Instead, the dashboard reads a prepared JSON cache file:
+The Playback Reporting database path is defined by `PLAYBACK_DATABASE` in
+`inc/jellyfin.php`. Change that constant if Jellyfin stores the database
+elsewhere.
+
+The web server and refresh job require:
+
+- Read access to `config.php`
+- Read access to the Playback Reporting database
+- Read access to the configured media directories
+- Write access to the system temporary directory used for Fulflix caches
+
+## Build the Initial Cache
+
+```bash
+sudo -u www-data php bin/refresh-dashboard.php
+```
+
+A successful refresh prints a timestamp and elapsed time.
+
+The dashboard cache is stored by default at:
 
 ```text
 /tmp/fulflix-stats-cache/dashboard.json
 ```
 
-Build or refresh it manually:
+Poster files are stored separately at:
 
-```bash
-sudo -u www-data php /var/www/html/bin/refresh-dashboard.php
+```text
+/tmp/fulflix-poster-cache/
 ```
-
-The refresh process uses a lock file to prevent overlapping runs and writes the JSON file atomically.
-
-If the cache does not exist, the web interface builds it once so the dashboard can start before the cron job has been installed.
 
 ## Hourly Refresh
 
-Install the included cron example:
+Install the included cron definition:
 
 ```bash
-sudo cp /var/www/html/fulflix-stats.cron.example /etc/cron.d/fulflix-stats
+sudo cp fulflix-stats.cron.example /etc/cron.d/fulflix-stats
 sudo chmod 644 /etc/cron.d/fulflix-stats
 sudo touch /var/log/fulflix-stats.log
 sudo chown www-data:www-data /var/log/fulflix-stats.log
@@ -116,56 +157,100 @@ The default schedule runs at the top of every hour:
 0 * * * * www-data /usr/bin/php /var/www/html/bin/refresh-dashboard.php >> /var/log/fulflix-stats.log 2>&1
 ```
 
-Check the latest refresh:
+See [HOURLY-CACHE-INSTALL.md](HOURLY-CACHE-INSTALL.md) for verification and
+troubleshooting steps.
 
-```bash
-tail -n 20 /var/log/fulflix-stats.log
-```
-
-## Image Cache
-
-Poster and backdrop images are proxied through `image.php` and stored locally under the Fulflix cache directory.
-
-This reduces repeated image requests to Jellyfin and allows the dashboard to reuse cached files.
-
-The cache is normally located under:
+## Cache Architecture
 
 ```text
-/tmp/fulflix-stats-cache/
+Browser
+  │
+  └── index.php
+        │
+        └── dashboard.json
+
+Scheduled refresh
+  │
+  └── bin/refresh-dashboard.php
+        ├── Jellyfin API
+        ├── Playback Reporting SQLite database
+        └── dashboard.json
 ```
 
-## Playback Reporting
+The refresh process:
 
-Fulflix Stats uses Jellyfin's Playback Reporting data for playback history, watch time, rankings, client usage, and playback method statistics.
+1. Obtains an exclusive lock.
+2. Collects Jellyfin and Playback Reporting data.
+3. Writes a temporary JSON file.
+4. Atomically renames the file into place.
+5. Releases the lock.
 
-The Playback Reporting plugin must be installed and configured in Jellyfin. The PHP process must be able to read its SQLite database.
+If the cache does not exist, the first page request builds it once.
 
 ## Security
 
-Do not commit `config.php` to a public repository.
+- Never commit `config.php`.
+- Use a dedicated Jellyfin API key and rotate it if exposed.
+- Restrict filesystem permissions to the required database and media paths.
+- Place the dashboard behind authentication or a trusted reverse proxy when it
+  is accessible outside a trusted network.
+- Review [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 
-Use a Jellyfin API key with only the access required by the dashboard. Keep the dashboard behind authentication or a trusted reverse proxy if it is reachable outside your local network.
+## Validation
 
-## Development
-
-Run syntax checks before committing:
+Check every PHP file:
 
 ```bash
-php -l index.php
-php -l image.php
-php -l inc/dashboard.php
-php -l inc/jellyfin.php
-php -l bin/refresh-dashboard.php
+find . -name '*.php' -print0 | xargs -0 -n1 php -l
 ```
 
-Refresh the cache manually after backend changes:
+Refresh the cache after backend changes:
 
 ```bash
 sudo -u www-data php bin/refresh-dashboard.php
 ```
 
+## Terminology
+
+The interface uses the following terms consistently:
+
+- **Playback count** for the number of distinct playback sessions
+- **Watch time** for accumulated playback duration
+- **TV Series** for series-level media
+- **Recently Added** for newly indexed library items
+- **Playback Methods** for direct play, direct stream, and transcoding
+- **Media Profile** for codec and resolution summaries
+- **Cached data** for the prepared dashboard JSON
+
+## Known Limitations
+
+- Playback accuracy depends on the data recorded by the Playback Reporting
+  plugin.
+- Series rankings depend on Jellyfin metadata resolving episodes to their
+  parent series.
+- Storage totals require filesystem access to the configured media paths.
+- The dashboard currently uses one configured Jellyfin server.
+- The interface does not provide authentication by itself.
+
+## Roadmap
+
+Potential future work:
+
+- Configurable timezone and locale
+- Optional application-level authentication
+- Additional date ranges
+- Exportable reports
+- Automated tests
+- Screenshot documentation
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
-No license has been selected yet.
-
-Until a license is added, the source code remains copyrighted and is not automatically available for redistribution or modification by third parties.
+Fulflix Stats is available under the [MIT License](LICENSE).
