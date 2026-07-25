@@ -1,4 +1,0 @@
-# Uses the shared cache directory /var/cache/fulflix-stats.
-# Uppdate Stats every hour.
-# Change /var/www/html to the path for your environment.
-0 * * * * www-data /usr/bin/php /var/www/html/bin/refresh-dashboard.php >> /var/log/fulflix-stats.log 2>&1

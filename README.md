@@ -1,18 +1,13 @@
-# Fulflix Stats
+# Jelana
 
-![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4)
-![Jellyfin](https://img.shields.io/badge/Jellyfin-dashboard-00A4DC)
-![License](https://img.shields.io/badge/license-MIT-green)
+**A modern analytics dashboard for Jellyfin.**
 
-**A lightweight, cache-driven statistics dashboard for Jellyfin.**
+Jelana presents playback history, watch time, active users, library statistics,
+media profiles, recently added items, and play-count rankings in a responsive
+web dashboard.
 
-Fulflix Stats presents playback history, watch time, active users, library
-growth, storage usage, media formats, and recently added titles in a compact
-responsive interface. Normal page views read a prepared JSON cache instead of
-querying Jellyfin and Playback Reporting on every request.
+![Jelana dashboard](docs/dashboard.png)
 
-The application uses PHP, SQLite, Apache-compatible hosting, and plain
-JavaScript. Docker and frontend frameworks are not required.
 
 ## Highlights
 
@@ -30,10 +25,10 @@ JavaScript. Docker and frontend frameworks are not required.
 - Responsive interface with configurable sections
 - Central configuration for branding, paths, database, cache, and timezone
 
-## Screenshots
+## Screenshot
 
-Add project screenshots under a `docs/` directory and reference them here when
-the dashboard is published.
+![Jelana dashboard](docs/dashboard.png)
+
 
 ## Requirements
 
@@ -72,7 +67,7 @@ the dashboard is published.
 ├── README.md
 ├── SECURITY.md
 ├── config.example.php
-├── fulflix-stats.cron.example
+├── jelana.cron.example
 ├── image.php
 └── index.php
 ```
@@ -82,12 +77,14 @@ server details, and an API key.
 
 ## Installation
 
+A condensed step-by-step guide is available in [INSTALL.md](INSTALL.md).
+
 Clone or copy the project into the web root:
 
 ```bash
 cd /var/www/html
-git clone <repository-url> fulflix-stats
-cd fulflix-stats
+git clone <repository-url> jelana
+cd jelana
 ```
 
 Create the local configuration:
@@ -119,7 +116,7 @@ $mediaLibraries = [
     // 'Anime' => '/mnt/media/anime',
 ];
 
-$cacheDirectory = '/var/cache/fulflix-stats';
+$cacheDirectory = '/var/cache/jelana';
 $timezone = 'Europe/Stockholm';
 ```
 
@@ -139,8 +136,8 @@ The web server and refresh job require:
 Create a shared cache directory before running the web application or cron job:
 
 ```bash
-sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats
-sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats/posters
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/jelana
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/jelana/posters
 ```
 
 A fixed path is used instead of the system temporary directory so Apache,
@@ -158,13 +155,13 @@ A successful refresh prints a timestamp and elapsed time.
 The dashboard cache is stored by default at:
 
 ```text
-/var/cache/fulflix-stats/dashboard.json
+/var/cache/jelana/dashboard.json
 ```
 
 Poster files are stored separately at:
 
 ```text
-/var/cache/fulflix-stats/posters/
+/var/cache/jelana/posters/
 ```
 
 ## Hourly Refresh
@@ -172,16 +169,16 @@ Poster files are stored separately at:
 Install the included cron definition:
 
 ```bash
-sudo cp fulflix-stats.cron.example /etc/cron.d/fulflix-stats
-sudo chmod 644 /etc/cron.d/fulflix-stats
-sudo touch /var/log/fulflix-stats.log
-sudo chown www-data:www-data /var/log/fulflix-stats.log
+sudo cp jelana.cron.example /etc/cron.d/jelana
+sudo chmod 644 /etc/cron.d/jelana
+sudo touch /var/log/jelana.log
+sudo chown www-data:www-data /var/log/jelana.log
 ```
 
 The default schedule runs at the top of every hour:
 
 ```cron
-0 * * * * www-data /usr/bin/php /var/www/html/bin/refresh-dashboard.php >> /var/log/fulflix-stats.log 2>&1
+0 * * * * www-data /usr/bin/php /var/www/html/bin/refresh-dashboard.php >> /var/log/jelana.log 2>&1
 ```
 
 See [HOURLY-CACHE-INSTALL.md](HOURLY-CACHE-INSTALL.md) for verification and
@@ -278,6 +275,18 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [CHANGELOG.md](CHANGELOG.md).
 
+## Releases
+
+Stable versions are published through GitHub Releases and follow semantic
+versioning. For support requests and bug reports, include the version shown in
+the dashboard footer.
+
+The first public Jelana release is **v2.1.0**.
+
+## Suggested GitHub topics
+
+`jellyfin` · `analytics` · `dashboard` · `php` · `sqlite` · `media-server` · `statistics`
+
 ## License
 
-Fulflix Stats is available under the [MIT License](LICENSE).
+Jelana is available under the [MIT License](LICENSE).

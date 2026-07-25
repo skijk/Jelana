@@ -1,8 +1,8 @@
 ## Create the shared cache directory
 
 ```bash
-sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats
-sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats/posters
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/jelana
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/jelana/posters
 ```
 
 This avoids separate temporary directories when Apache or PHP-FPM runs with
@@ -10,7 +10,7 @@ systemd `PrivateTmp=yes`.
 
 # Hourly Cache Installation
 
-Fulflix Stats uses a prebuilt JSON cache so normal dashboard requests do not query Jellyfin or the Playback Reporting database.
+Jelana uses a prebuilt JSON cache so normal dashboard requests do not query Jellyfin or the Playback Reporting database.
 
 ## 1. Validate the PHP Files
 
@@ -27,27 +27,27 @@ php -l bin/refresh-dashboard.php
 Run the refresh script as the web server user:
 
 ```bash
-sudo -u www-data php /var/www/html/bin/refresh-dashboard.php
+sudo -u www-data php /var/www/html/jelana/bin/refresh-dashboard.php
 ```
 
 A successful run should produce output similar to:
 
 ```text
-[2026-07-25 17:30:00] Fulflix cache refreshed in 4.82 seconds.
+[2026-07-25 17:30:00] Jelana cache refreshed in 4.82 seconds.
 ```
 
 ## 3. Install the Cron Job
 
 ```bash
-sudo cp /var/www/html/fulflix-stats.cron.example /etc/cron.d/fulflix-stats
-sudo chmod 644 /etc/cron.d/fulflix-stats
+sudo cp /var/www/html/jelana.cron.example /etc/cron.d/jelana
+sudo chmod 644 /etc/cron.d/jelana
 ```
 
 Create the log file:
 
 ```bash
-sudo touch /var/log/fulflix-stats.log
-sudo chown www-data:www-data /var/log/fulflix-stats.log
+sudo touch /var/log/jelana.log
+sudo chown www-data:www-data /var/log/jelana.log
 ```
 
 The included cron job runs at the top of every hour.
@@ -55,20 +55,20 @@ The included cron job runs at the top of every hour.
 ## 4. Verify the Cache
 
 ```bash
-ls -lh /var/cache/fulflix-stats/dashboard.json
-head -c 200 /var/cache/fulflix-stats/dashboard.json
+ls -lh /var/cache/jelana/dashboard.json
+head -c 200 /var/cache/jelana/dashboard.json
 ```
 
 Check the refresh log:
 
 ```bash
-tail -n 20 /var/log/fulflix-stats.log
+tail -n 20 /var/log/jelana.log
 ```
 
 Normal page views should only read the JSON file and should not update its modification time.
 
 ```bash
-stat /var/cache/fulflix-stats/dashboard.json
+stat /var/cache/jelana/dashboard.json
 ```
 
 Reload the dashboard and run the command again. The timestamp should remain unchanged until the scheduled refresh runs.
@@ -78,7 +78,7 @@ Reload the dashboard and run the command again. The timestamp should remain unch
 The default cache directory is:
 
 ```text
-/var/cache/fulflix-stats/
+/var/cache/jelana/
 ```
 
 Typical files include:

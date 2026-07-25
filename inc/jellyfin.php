@@ -487,7 +487,7 @@ function getLibraryStorageBytes(array $paths): ?int
         return null;
     }
 
-    $cacheFile = sys_get_temp_dir() . '/fulflix-library-size.json';
+    $cacheFile = sys_get_temp_dir() . '/jelana-library-size.json';
 
     if (is_file($cacheFile) && filemtime($cacheFile) !== false && filemtime($cacheFile) > time() - 3600) {
         $cached = json_decode((string)file_get_contents($cacheFile), true);

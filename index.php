@@ -2,10 +2,32 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/inc/app.php';
-require_once __DIR__ . '/inc/jellyfin.php';
-require_once __DIR__ . '/inc/dashboard.php';
+try {
+    require_once __DIR__ . '/config.php';
+    require_once __DIR__ . '/inc/app.php';
+    require_once __DIR__ . '/inc/jellyfin.php';
+    require_once __DIR__ . '/inc/dashboard.php';
+} catch (Throwable $exception) {
+    http_response_code(500);
+    $message = htmlspecialchars(
+        $exception->getMessage(),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
+
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8">';
+    echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+    echo '<title>Jelana configuration error</title>';
+    echo '<style>body{margin:0;background:#101114;color:#eee;font:16px/1.5 system-ui,sans-serif}'
+        . 'main{max-width:760px;margin:10vh auto;padding:32px;background:#1b1d22;border-radius:18px}'
+        . 'h1{margin-top:0}code{display:block;padding:16px;background:#111318;border-radius:10px;'
+        . 'overflow-wrap:anywhere;color:#f2b8b5}</style></head><body><main>';
+    echo '<h1>Jelana configuration error</h1>';
+    echo '<p>Check <strong>config.php</strong> and the file permissions for the configured paths.</p>';
+    echo '<code>' . $message . '</code>';
+    echo '</main></body></html>';
+    exit;
+}
 
 const DASHBOARD_SECTION_LABELS = [
     'overview' => 'Overview',
@@ -644,12 +666,18 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         </div>
         <button type="button" class="reset-settings">Reset layout</button>
     </dialog>
+
+<footer class="site-footer">
+    <span>Jelana v<?= e(JELANA_VERSION) ?></span>
+    <span>Analytics for Jellyfin</span>
+</footer>
+
 </main>
 
 <script>
 const itemModal = document.querySelector('.item-modal');
 const settingsModal = document.querySelector('.settings-modal');
-const storageKey = 'fulflix-sections';
+const storageKey = 'jelana-sections';
 
 function configureTabs(panel, tabSelector, contentSelector, dataKey) {
     const tabs = [...panel.querySelectorAll(tabSelector)];

@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 
 // Name shown in the browser title, page heading and CLI output.
-$appName = 'My Jellyfin';
+$appName = 'Jelana';
 
 // Jellyfin API connection.
 $jellyfinServer = 'https://jellyfin.example.com:8920';
@@ -29,7 +29,7 @@ $mediaLibraries = [
 ];
 
 // Shared writable cache directory.
-$cacheDirectory = '/var/cache/fulflix-stats';
+$cacheDirectory = '/var/cache/jelana';
 
 // Timezone used for date ranges and timestamps.
 $timezone = 'Europe/Stockholm';

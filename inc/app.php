@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-$appName = trim((string) ($appName ?? 'Jellyfin Stats'));
-$appName = $appName !== '' ? $appName : 'Jellyfin Stats';
+const JELANA_VERSION = '2.1.0';
+
+$appName = trim((string) ($appName ?? 'Jelana'));
+$appName = $appName !== '' ? $appName : 'Jelana';
 
 $jellyfinServer = rtrim(trim((string) ($jellyfinServer ?? '')), '/');
 $apiKey = trim((string) ($apiKey ?? ''));
@@ -16,7 +18,7 @@ $playbackDatabase = trim((string) (
 ));
 
 $cacheDirectory = rtrim(trim((string) (
-    $cacheDirectory ?? '/var/cache/fulflix-stats'
+    $cacheDirectory ?? '/var/cache/jelana'
 )), '/');
 
 $timezone = trim((string) ($timezone ?? 'UTC'));
@@ -60,4 +62,43 @@ if ($apiKey === '') {
 }
 if ($cacheDirectory === '') {
     throw new RuntimeException('Missing $cacheDirectory in config.php.');
+}
+
+if ($playbackDatabase === '') {
+    throw new RuntimeException('Missing $playbackDatabase in config.php.');
+}
+
+if (!is_file($playbackDatabase)) {
+    throw new RuntimeException(
+        'Playback Reporting database not found: ' . $playbackDatabase
+    );
+}
+
+if (!is_readable($playbackDatabase)) {
+    throw new RuntimeException(
+        'Playback Reporting database is not readable by the web server: '
+        . $playbackDatabase
+    );
+}
+
+if ($mediaLibraries === []) {
+    throw new RuntimeException(
+        'No valid media libraries are configured in $mediaLibraries.'
+    );
+}
+
+foreach ($mediaLibraries as $libraryLabel => $libraryPath) {
+    if (!is_dir($libraryPath)) {
+        throw new RuntimeException(
+            'Media library path for "' . $libraryLabel . '" was not found: '
+            . $libraryPath
+        );
+    }
+
+    if (!is_readable($libraryPath)) {
+        throw new RuntimeException(
+            'Media library path for "' . $libraryLabel
+            . '" is not readable by the web server: ' . $libraryPath
+        );
+    }
 }
