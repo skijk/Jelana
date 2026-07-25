@@ -946,3 +946,36 @@ h1 {
         font-size: 0.63rem;
     }
 }
+
+
+/* New library additions period switcher */
+.new-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.new-panel-header .panel-heading {
+    margin-bottom: 0;
+}
+
+.new-period[hidden] {
+    display: none !important;
+}
+
+.v2-new-panel .new-items-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 520px) {
+    .new-panel-header {
+        align-items: center;
+        gap: 8px;
+    }
+
+    .new-panel-header .ranking-tab {
+        padding-inline: 8px;
+    }
+}

@@ -145,7 +145,29 @@ function associativeRows(array $data, int $limit=5): array
 
 <section class="v2-activity-row" data-section="activity">
 <section class="panel chart-panel v2-chart-panel" data-section="activity"><div class="panel-heading chart-heading"><div><p>AKTIVITET</p><h2>Tittartid per dag · 30 dagar</h2></div><span><?=e(formatDuration(array_sum(array_column($activity,'Duration'))))?></span></div><?php $maxDuration=max(1,...array_column($activity,'Duration')); ?><div class="activity-chart" aria-label="Tittartid per dag de senaste 30 dagarna"><?php foreach($activity as $day): $height=max(3,((int)$day['Duration']/$maxDuration)*100); $date=new DateTimeImmutable((string)$day['Date']); $classes=['chart-day']; if($date->format('Y-m-d')===(new DateTimeImmutable('today'))->format('Y-m-d'))$classes[]='is-today'; if((int)$date->format('N')>=6)$classes[]='is-weekend'; ?><div class="<?=implode(' ',$classes)?>" tabindex="0" data-tooltip="<?=e($date->format('j M')).' · '.e(formatDuration((int)$day['Duration'])).' · '.formatNumber((int)$day['Plays']).' registreringar'?>"><span class="chart-bar" style="height:<?=number_format($height,2,'.','')?>%"></span><small><?=e($date->format('d'))?></small></div><?php endforeach;?></div></section>
-<article class="panel new-panel v2-new-panel"><div class="panel-heading"><p>NYTT I BIBLIOTEKET</p><h2>Senaste 7 / 30 dagarna</h2></div><div class="new-items-grid"><?php foreach ([['Filmer',$newItems['Movies7'],'7 dagar'],['Filmer',$newItems['Movies30'],'30 dagar'],['Serier',$newItems['Series7'],'7 dagar'],['Serier',$newItems['Series30'],'30 dagar']] as [$label,$value,$period]): ?><div><span><?=$label?></span><strong>+<?=formatNumber((int)$value)?></strong><small><?=$period?></small></div><?php endforeach;?></div></article>
+<article class="panel new-panel v2-new-panel" data-new-panel>
+    <div class="new-panel-header">
+        <div class="panel-heading"><p>NYTT I BIBLIOTEKET</p><h2>Senaste tillskotten</h2></div>
+        <div class="ranking-tabs" role="tablist" aria-label="Välj tidsperiod för nya titlar">
+            <button type="button" class="ranking-tab is-active" role="tab" aria-selected="true" data-new-period="7">7 dagar</button>
+            <button type="button" class="ranking-tab" role="tab" aria-selected="false" data-new-period="30">30 dagar</button>
+        </div>
+    </div>
+
+    <div class="new-period is-active" data-new-content="7">
+        <div class="new-items-grid">
+            <div><span>Filmer</span><strong>+<?=formatNumber((int)$newItems['Movies7'])?></strong><small>7 dagar</small></div>
+            <div><span>Serier</span><strong>+<?=formatNumber((int)$newItems['Series7'])?></strong><small>7 dagar</small></div>
+        </div>
+    </div>
+
+    <div class="new-period" data-new-content="30" hidden>
+        <div class="new-items-grid">
+            <div><span>Filmer</span><strong>+<?=formatNumber((int)$newItems['Movies30'])?></strong><small>30 dagar</small></div>
+            <div><span>Serier</span><strong>+<?=formatNumber((int)$newItems['Series30'])?></strong><small>30 dagar</small></div>
+        </div>
+    </div>
+</article>
 </section>
 
 <section class="dashboard-grid ranking-grid v2-ranking-grid" data-section="rankings">
@@ -180,6 +202,29 @@ renderRankingPanel('series', 'SERIER', [
 <dialog class="settings-modal"><button class="modal-close" type="button" aria-label="Stäng">×</button><h2>Visa sektioner</h2><div class="settings-list"><?php foreach(['overview'=>'Översikt','playback'=>'Uppspelning','rankings'=>'Topplistor','users'=>'Användare och uppspelning','activity'=>'Aktivitet och nytt','technical'=>'Biblioteksprofil','recent'=>'Senast tillagt'] as $key=>$label): ?><label><input type="checkbox" data-toggle-section="<?=$key?>" checked> <?=$label?></label><?php endforeach;?></div><button type="button" class="reset-settings">Återställ</button></dialog>
 <script>
 const itemModal=document.querySelector('.item-modal'), settingsModal=document.querySelector('.settings-modal');
+
+document.querySelectorAll('[data-new-panel]').forEach(panel => {
+    const tabs = [...panel.querySelectorAll('[data-new-period]')];
+    const contents = [...panel.querySelectorAll('[data-new-content]')];
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const selectedPeriod = tab.dataset.newPeriod;
+
+            tabs.forEach(currentTab => {
+                const isActive = currentTab === tab;
+                currentTab.classList.toggle('is-active', isActive);
+                currentTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            contents.forEach(content => {
+                const isActive = content.dataset.newContent === selectedPeriod;
+                content.classList.toggle('is-active', isActive);
+                content.hidden = !isActive;
+            });
+        });
+    });
+});
 
 document.querySelectorAll('[data-ranking-panel]').forEach(panel => {
     const tabs = [...panel.querySelectorAll('[data-ranking-period]')];
