@@ -6,7 +6,22 @@ Jelana presents playback history, watch time, active users, library statistics,
 media profiles, recently added items, and play-count rankings in a responsive
 web dashboard.
 
-![Jelana dashboard](docs/dashboard.png)
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshot-1.png" alt="Jelana overview and activity dashboard"></td>
+    <td width="50%"><img src="docs/screenshot-2.png" alt="Jelana playback methods and clients"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshot-3.png" alt="Jelana user statistics"></td>
+    <td width="50%"><img src="docs/screenshot-4.png" alt="Jelana most-played movies"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshot-5.png" alt="Jelana storage and library growth"></td>
+    <td width="50%"><img src="docs/screenshot-6.png" alt="Jelana video codecs"></td>
+  </tr>
+</table>
 
 
 ## Highlights
@@ -24,12 +39,6 @@ web dashboard.
 - Hourly JSON dashboard cache with locking and atomic writes
 - Responsive interface with configurable sections
 - Central configuration for branding, paths, database, cache, and timezone
-
-## Screenshot
-
-
-Additional unmodified screenshots are available in [SCREENSHOTS.md](SCREENSHOTS.md).
-![Jelana dashboard](docs/dashboard.png)
 
 
 ## Requirements
