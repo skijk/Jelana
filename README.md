@@ -120,6 +120,19 @@ The web server and refresh job require:
 - Read access to the configured media directories
 - Write access to the system temporary directory used for Fulflix caches
 
+## Create the Cache Directory
+
+Create a shared cache directory before running the web application or cron job:
+
+```bash
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats/posters
+```
+
+A fixed path is used instead of the system temporary directory so Apache,
+PHP-FPM, and cron all access the same cache even when systemd `PrivateTmp` is
+enabled.
+
 ## Build the Initial Cache
 
 ```bash
@@ -131,13 +144,13 @@ A successful refresh prints a timestamp and elapsed time.
 The dashboard cache is stored by default at:
 
 ```text
-/tmp/fulflix-stats-cache/dashboard.json
+/var/cache/fulflix-stats/dashboard.json
 ```
 
 Poster files are stored separately at:
 
 ```text
-/tmp/fulflix-poster-cache/
+/var/cache/fulflix-stats/posters/
 ```
 
 ## Hourly Refresh

@@ -16,6 +16,8 @@ versioning where practical.
 
 ### Changed
 
+- Moved dashboard and poster caches to `/var/cache/fulflix-stats` to avoid systemd `PrivateTmp` isolation.
+
 - Standardized all interface terminology in English.
 - Reformatted the main dashboard and image proxy for readability.
 - Improved naming, type declarations, comments, and error handling.

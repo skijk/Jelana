@@ -1,3 +1,13 @@
+## Create the shared cache directory
+
+```bash
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats
+sudo install -d -o www-data -g www-data -m 0770 /var/cache/fulflix-stats/posters
+```
+
+This avoids separate temporary directories when Apache or PHP-FPM runs with
+systemd `PrivateTmp=yes`.
+
 # Hourly Cache Installation
 
 Fulflix Stats uses a prebuilt JSON cache so normal dashboard requests do not query Jellyfin or the Playback Reporting database.
@@ -45,8 +55,8 @@ The included cron job runs at the top of every hour.
 ## 4. Verify the Cache
 
 ```bash
-ls -lh /tmp/fulflix-stats-cache/dashboard.json
-head -c 200 /tmp/fulflix-stats-cache/dashboard.json
+ls -lh /var/cache/fulflix-stats/dashboard.json
+head -c 200 /var/cache/fulflix-stats/dashboard.json
 ```
 
 Check the refresh log:
@@ -58,7 +68,7 @@ tail -n 20 /var/log/fulflix-stats.log
 Normal page views should only read the JSON file and should not update its modification time.
 
 ```bash
-stat /tmp/fulflix-stats-cache/dashboard.json
+stat /var/cache/fulflix-stats/dashboard.json
 ```
 
 Reload the dashboard and run the command again. The timestamp should remain unchanged until the scheduled refresh runs.
@@ -68,7 +78,7 @@ Reload the dashboard and run the command again. The timestamp should remain unch
 The default cache directory is:
 
 ```text
-/tmp/fulflix-stats-cache/
+/var/cache/fulflix-stats/
 ```
 
 Typical files include:

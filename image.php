@@ -78,7 +78,7 @@ if (!is_string($id) || preg_match('/^[a-fA-F0-9]{16,64}$/', $id) !== 1) {
     outputPlaceholder();
 }
 
-$cacheDirectory = sys_get_temp_dir() . '/fulflix-poster-cache';
+$cacheDirectory = '/var/cache/fulflix-stats/posters';
 
 if (!is_dir($cacheDirectory)) {
     @mkdir($cacheDirectory, 0770, true);
