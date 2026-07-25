@@ -19,7 +19,7 @@ try {
     fwrite(
         STDOUT,
         sprintf(
-            "[%s] Fulflix-cache uppdaterad på %.2f sekunder.\n",
+            "[%s] Fulflix cache refreshed in %.2f seconds.\n",
             $updatedAt->format('Y-m-d H:i:s'),
             $elapsed
         )
@@ -27,6 +27,6 @@ try {
 
     exit(0);
 } catch (Throwable $error) {
-    fwrite(STDERR, '[Fulflix] Cacheuppdatering misslyckades: ' . $error->getMessage() . PHP_EOL);
+    fwrite(STDERR, '[Fulflix] Cache refresh failed: ' . $error->getMessage() . PHP_EOL);
     exit(1);
 }

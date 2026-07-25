@@ -323,7 +323,7 @@ function jellyfinUsers(): array
 
     foreach (jellyfin('/Users') as $user) {
         if (isset($user['Id'])) {
-            $users[(string)$user['Id']] = (string)($user['Name'] ?? 'Okänd användare');
+            $users[(string)$user['Id']] = (string)($user['Name'] ?? 'Okänd users');
         }
     }
 
@@ -360,7 +360,7 @@ function getTopActiveUsers(int $days, int $limit): array
     foreach ($stmt->fetchAll() ?: [] as $row) {
         $id = (string)$row['UserId'];
         $result[] = [
-            'Name' => $names[$id] ?? 'Okänd användare',
+            'Name' => $names[$id] ?? 'Okänd users',
             'Plays' => (int)$row['Plays'],
             'Duration' => (int)$row['Duration'],
         ];

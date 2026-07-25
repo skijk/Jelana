@@ -111,13 +111,13 @@ function writeDashboardCache(array $value): bool
 function refreshDashboardCache(array $mediaPaths, bool $waitForLock = true): array
 {
     if (!ensureDashboardCacheDirectory()) {
-        throw new RuntimeException('Kunde inte skapa dashboardens cachekatalog.');
+        throw new RuntimeException('Could not create the dashboard cache directory.');
     }
 
     $lockHandle = @fopen(dashboardLockFile(), 'c');
 
     if ($lockHandle === false) {
-        throw new RuntimeException('Kunde inte öppna dashboardens låsfil.');
+        throw new RuntimeException('Could not open the dashboard lock file.');
     }
 
     $operation = LOCK_EX | ($waitForLock ? 0 : LOCK_NB);
@@ -130,14 +130,14 @@ function refreshDashboardCache(array $mediaPaths, bool $waitForLock = true): arr
             return $cached;
         }
 
-        throw new RuntimeException('En annan cacheuppdatering körs redan.');
+        throw new RuntimeException('Another cache refresh is already running.');
     }
 
     try {
         $value = buildDashboardData($mediaPaths);
 
         if (!writeDashboardCache($value)) {
-            throw new RuntimeException('Kunde inte skriva dashboardens cachefil.');
+            throw new RuntimeException('Could not write the dashboard cache file.');
         }
 
         return $value;
