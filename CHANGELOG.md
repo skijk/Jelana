@@ -20,6 +20,9 @@ versioning where practical.
 
 ### Changed
 
+- Renamed movie and TV rankings to Most played, restored play-count sorting, and replaced total watch time with unique viewers.
+
+
 - Changed Most Watched rankings to sort by total watch time first, with play count used only as a tiebreaker.
 
 

@@ -164,10 +164,11 @@ function getTopMovies(int $days, int $limit): array
             ItemId AS Id,
             ItemName AS Name,
             SUM(NewPlay) AS Plays,
-            SUM(PlayDuration) AS Duration
+            SUM(PlayDuration) AS Duration,
+            COUNT(DISTINCT UserId) AS UniqueViewers
         FROM sessions
         GROUP BY ItemId, ItemName
-        ORDER BY Duration DESC, Plays DESC
+        ORDER BY Plays DESC, Duration DESC
         LIMIT :limit
     ";
 
@@ -191,10 +192,11 @@ function getEpisodePlaybackRows(int $days): array
         SELECT
             ItemId,
             ItemName,
+            UserId,
             SUM(NewPlay) AS Plays,
             SUM(PlayDuration) AS Duration
         FROM sessions
-        GROUP BY ItemId, ItemName
+        GROUP BY ItemId, ItemName, UserId
     ";
 
     $stmt = $pdo->prepare($sql);
@@ -297,12 +299,24 @@ function getTopSeries(int $days, int $limit): array
                 'Name' => $seriesName,
                 'Plays' => 0,
                 'Duration' => 0,
+                '_ViewerIds' => [],
             ];
         }
 
         $series[$key]['Plays'] += (int)$row['Plays'];
         $series[$key]['Duration'] += (int)$row['Duration'];
+
+        $viewerId = (string)($row['UserId'] ?? '');
+        if ($viewerId !== '') {
+            $series[$key]['_ViewerIds'][$viewerId] = true;
+        }
     }
+
+    foreach ($series as &$entry) {
+        $entry['UniqueViewers'] = count($entry['_ViewerIds']);
+        unset($entry['_ViewerIds']);
+    }
+    unset($entry);
 
     usort($series, static fn(array $a, array $b): int =>
         [$b['Plays'], $b['Duration']] <=> [$a['Plays'], $a['Duration']]

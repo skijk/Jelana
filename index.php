@@ -116,7 +116,6 @@ function renderTopList(array $items, string $server): void
             $id = (string) ($item['Id'] ?? '');
             $name = (string) ($item['Name'] ?? 'Unknown title');
             $plays = (int) ($item['Plays'] ?? 0);
-            $duration = (int) ($item['Duration'] ?? 0);
 
             echo '<li class="ranking-item">';
             echo '<a href="' . e(jellyfinItemUrl($server, $id)) . '" target="_blank" rel="noopener noreferrer">';
@@ -124,7 +123,8 @@ function renderTopList(array $items, string $server): void
             echo '<img src="image.php?id=' . rawurlencode($id) . '" alt="" loading="lazy">';
             echo '<span class="rank-copy">';
             echo '<strong>' . e($name) . '</strong>';
-            echo '<small>' . formatNumber($plays) . ' plays · ' . e(formatDuration($duration)) . '</small>';
+            $uniqueViewers = (int) ($item['UniqueViewers'] ?? 0);
+            echo '<small>' . formatNumber($plays) . ' plays · ' . formatNumber($uniqueViewers) . ' unique viewers</small>';
             echo '</span>';
             echo '</a>';
             echo '</li>';
@@ -146,7 +146,7 @@ function renderRankingPanel(
 
     echo '<article id="most-watched" class="panel ranking-panel" data-ranking-panel="' . e($key) . '">';
     echo '<div class="ranking-panel-header">';
-    echo '<div class="panel-heading"><p>' . e($label) . '</p><h2>Most watched</h2></div>';
+    echo '<div class="panel-heading"><p>' . e($label) . '</p><h2>Most played</h2></div>';
     echo '<div class="ranking-tabs" role="tablist" aria-label="Select time range">';
 
     foreach ($periods as $period => $_items) {
@@ -310,7 +310,7 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
              alt="Fulflix"></a>
         <nav class="jellyfin-nav" aria-label="Dashboard navigation">
             <a class="is-active" href="#overview">Overview</a>
-            <a href="#most-watched">Most Watched</a>
+            <a href="#most-watched">Most Played</a>
             <a href="#users">Users</a>
             <a href="#playback">Playback</a>
         </nav>
