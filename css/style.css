@@ -522,7 +522,7 @@ h1 {
 }
 
 .v2-metric-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-bottom: 10px;
 }
 
@@ -1702,5 +1702,49 @@ button[data-period] {
     .overview-icon {
         width: 2.25rem;
         height: 2.25rem;
+    }
+}
+
+
+/* Playback count and watch-time period selectors. */
+.metric-tab-card {
+    min-height: 92px;
+    justify-content: flex-start;
+}
+
+.metric-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.metric-tabs {
+    margin-left: auto;
+}
+
+.metric-period {
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    width: 100%;
+}
+
+.metric-period strong {
+    margin-top: 0.45rem;
+}
+
+.metric-period[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 760px) {
+    .v2-metric-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metric-card-header {
+        align-items: flex-start;
     }
 }

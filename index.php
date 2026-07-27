@@ -444,28 +444,62 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     </section>
 
     <section class="metric-grid v2-metric-grid" id="playback" data-section="playback">
-        <article class="metric-card">
-            <span class="metric-label">Playback count</span>
-            <strong><?= formatNumber((int) $playback30['Plays']) ?></strong>
-            <small>last 30 days</small>
+        <article class="metric-card metric-tab-card" data-metric-panel>
+            <div class="metric-card-header">
+                <span class="metric-label">Playback count</span>
+                <div class="ranking-tabs metric-tabs" role="tablist" aria-label="Select time range for playback count">
+                    <button
+                        type="button"
+                        class="ranking-tab is-active"
+                        role="tab"
+                        aria-selected="true"
+                        data-metric-period="30"
+                    >30 days</button>
+                    <button
+                        type="button"
+                        class="ranking-tab"
+                        role="tab"
+                        aria-selected="false"
+                        data-metric-period="all"
+                    >All time</button>
+                </div>
+            </div>
+
+            <div class="metric-period is-active" data-metric-content="30">
+                <strong><?= formatNumber((int) $playback30['Plays']) ?></strong>
+            </div>
+            <div class="metric-period" data-metric-content="all" hidden>
+                <strong><?= formatNumber((int) $playbackAll['Plays']) ?></strong>
+            </div>
         </article>
 
-        <article class="metric-card">
-            <span class="metric-label">Playback count</span>
-            <strong><?= formatNumber((int) $playbackAll['Plays']) ?></strong>
-            <small>all time</small>
-        </article>
+        <article class="metric-card metric-tab-card" data-metric-panel>
+            <div class="metric-card-header">
+                <span class="metric-label">Watch time</span>
+                <div class="ranking-tabs metric-tabs" role="tablist" aria-label="Select time range for watch time">
+                    <button
+                        type="button"
+                        class="ranking-tab is-active"
+                        role="tab"
+                        aria-selected="true"
+                        data-metric-period="30"
+                    >30 days</button>
+                    <button
+                        type="button"
+                        class="ranking-tab"
+                        role="tab"
+                        aria-selected="false"
+                        data-metric-period="all"
+                    >All time</button>
+                </div>
+            </div>
 
-        <article class="metric-card">
-            <span class="metric-label">Watch time</span>
-            <strong><?= e(formatDuration((int) $playback30['Duration'])) ?></strong>
-            <small>last 30 days</small>
-        </article>
-
-        <article class="metric-card">
-            <span class="metric-label">Watch time</span>
-            <strong><?= e(formatDuration((int) $playbackAll['Duration'])) ?></strong>
-            <small>all time</small>
+            <div class="metric-period is-active" data-metric-content="30">
+                <strong><?= e(formatDuration((int) $playback30['Duration'])) ?></strong>
+            </div>
+            <div class="metric-period" data-metric-content="all" hidden>
+                <strong><?= e(formatDuration((int) $playbackAll['Duration'])) ?></strong>
+            </div>
         </article>
     </section>
 
@@ -735,6 +769,15 @@ function configureTabs(panel, tabSelector, contentSelector, dataKey) {
         });
     });
 }
+
+document.querySelectorAll('[data-metric-panel]').forEach((panel) => {
+    configureTabs(
+        panel,
+        '[data-metric-period]',
+        '[data-metric-content]',
+        'metricPeriod'
+    );
+});
 
 document.querySelectorAll('[data-new-panel]').forEach((panel) => {
     configureTabs(

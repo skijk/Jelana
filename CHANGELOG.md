@@ -7,6 +7,11 @@ versioning where practical.
 
 ## [Unreleased]
 
+### Changed
+
+- Combined playback count and watch time into two tabbed cards with 30-day and all-time views.
+
+
 ## [2.1.0] - 2026-07-25
 
 ### Added
