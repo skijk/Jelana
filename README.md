@@ -9,7 +9,7 @@ web dashboard.
 
 ## Screenshots
 
-<img src="docs/hero-dashboard.png" alt="Jelana dashboard overview" width="100%">
+<img src="docs/jelana-project.png" alt="Jelana dashboard overview" width="100%">
 
 <br><br>
 

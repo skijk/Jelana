@@ -501,6 +501,58 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
                 <strong><?= e(formatDuration((int) $playbackAll['Duration'])) ?></strong>
             </div>
         </article>
+
+        <article class="metric-card growth-metric-card" data-new-panel>
+            <div class="metric-card-header">
+                <span class="metric-label">Library growth</span>
+                <div
+                    class="ranking-tabs metric-tabs"
+                    role="tablist"
+                    aria-label="Select time range for recently added titles"
+                >
+                    <button
+                        type="button"
+                        class="ranking-tab is-active"
+                        role="tab"
+                        aria-selected="true"
+                        data-new-period="7"
+                    >7 days</button>
+                    <button
+                        type="button"
+                        class="ranking-tab"
+                        role="tab"
+                        aria-selected="false"
+                        data-new-period="30"
+                    >30 days</button>
+                </div>
+            </div>
+
+            <div class="new-period is-active" data-new-content="7">
+                <div class="growth-summary-grid">
+                    <div>
+                        <span>Movies</span>
+                        <strong>+<?= formatNumber((int) $newItems['Movies7']) ?></strong>
+                    </div>
+                    <div>
+                        <span>TV Series</span>
+                        <strong>+<?= formatNumber((int) $newItems['Series7']) ?></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="new-period" data-new-content="30" hidden>
+                <div class="growth-summary-grid">
+                    <div>
+                        <span>Movies</span>
+                        <strong>+<?= formatNumber((int) $newItems['Movies30']) ?></strong>
+                    </div>
+                    <div>
+                        <span>TV Series</span>
+                        <strong>+<?= formatNumber((int) $newItems['Series30']) ?></strong>
+                    </div>
+                </div>
+            </div>
+        </article>
     </section>
 
     <section class="v2-activity-row" data-section="activity">
@@ -549,67 +601,12 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
                 <?php endforeach; ?>
             </div>
         </section>
-
-        <article class="panel new-panel v2-new-panel" data-new-panel>
-            <div class="new-panel-header">
-                <div class="panel-heading">
-                    <p>RECENTLY ADDED</p>
-                    <h2>Library growth</h2>
-                </div>
-
-                <div
-                    class="ranking-tabs"
-                    role="tablist"
-                    aria-label="Select time range for recently added titles"
-                >
-                    <button
-                        type="button"
-                        class="ranking-tab is-active"
-                        role="tab"
-                        aria-selected="true"
-                        data-new-period="7"
-                    >7 days</button>
-                    <button
-                        type="button"
-                        class="ranking-tab"
-                        role="tab"
-                        aria-selected="false"
-                        data-new-period="30"
-                    >30 days</button>
-                </div>
-            </div>
-
-            <div class="new-period is-active" data-new-content="7">
-                <div class="new-items-grid">
-                    <div>
-                        <span>Movies</span>
-                        <strong>+<?= formatNumber((int) $newItems['Movies7']) ?></strong>
-                        <small>7 days</small>
-                    </div>
-                    <div>
-                        <span>TV Series</span>
-                        <strong>+<?= formatNumber((int) $newItems['Series7']) ?></strong>
-                        <small>7 days</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="new-period" data-new-content="30" hidden>
-                <div class="new-items-grid">
-                    <div>
-                        <span>Movies</span>
-                        <strong>+<?= formatNumber((int) $newItems['Movies30']) ?></strong>
-                        <small>30 days</small>
-                    </div>
-                    <div>
-                        <span>TV Series</span>
-                        <strong>+<?= formatNumber((int) $newItems['Series30']) ?></strong>
-                        <small>30 days</small>
-                    </div>
-                </div>
-            </div>
-        </article>
     </section>
+
+    <div class="dashboard-section-heading">
+        <span>POPULARITY</span>
+        <p>What people are watching</p>
+    </div>
 
     <section class="dashboard-grid ranking-grid v2-ranking-grid" data-section="rankings">
         <?php
@@ -628,6 +625,11 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         );
         ?>
     </section>
+
+    <div class="dashboard-section-heading">
+        <span>USAGE</span>
+        <p>Users, playback methods and clients</p>
+    </div>
 
     <section class="v2-operations-grid" id="users" data-section="users">
         <?php renderUserPanel(['7' => $topUsers7, '30' => $topUsers30]); ?>
@@ -649,31 +651,66 @@ $today = (new DateTimeImmutable('today'))->format('Y-m-d');
         </article>
     </section>
 
+    <div class="dashboard-section-heading">
+        <span>MEDIA PROFILE</span>
+        <p>Formats and codecs across the library</p>
+    </div>
+
     <section class="v2-library-grid" data-section="technical">
-        <article class="panel">
-            <div class="panel-heading">
-                <p>VIDEO</p>
-                <h2>Video codecs</h2>
-            </div>
-            <?php renderBreakdown(associativeRows($mediaProfile['Video'] ?? [])); ?>
-        </article>
+        <article class="panel media-profile-panel" data-media-panel>
+            <div class="media-profile-header">
+                <div class="panel-heading">
+                    <p>MEDIA PROFILE</p>
+                    <h2>Library formats</h2>
+                </div>
 
-        <article class="panel">
-            <div class="panel-heading">
-                <p>VIDEO</p>
-                <h2>Resolutions</h2>
+                <div
+                    class="ranking-tabs media-profile-tabs"
+                    role="tablist"
+                    aria-label="Select media profile category"
+                >
+                    <button
+                        type="button"
+                        class="ranking-tab is-active"
+                        role="tab"
+                        aria-selected="true"
+                        data-media-period="video"
+                    >Video</button>
+                    <button
+                        type="button"
+                        class="ranking-tab"
+                        role="tab"
+                        aria-selected="false"
+                        data-media-period="resolution"
+                    >Resolution</button>
+                    <button
+                        type="button"
+                        class="ranking-tab"
+                        role="tab"
+                        aria-selected="false"
+                        data-media-period="audio"
+                    >Audio</button>
+                </div>
             </div>
-            <?php renderBreakdown(associativeRows($mediaProfile['Resolution'] ?? [])); ?>
-        </article>
 
-        <article class="panel">
-            <div class="panel-heading">
-                <p>AUDIO</p>
-                <h2>Audio codecs</h2>
+            <div class="media-profile-period is-active" data-media-content="video">
+                <?php renderBreakdown(associativeRows($mediaProfile['Video'] ?? [])); ?>
             </div>
-            <?php renderBreakdown(associativeRows($mediaProfile['Audio'] ?? [])); ?>
+
+            <div class="media-profile-period" data-media-content="resolution" hidden>
+                <?php renderBreakdown(associativeRows($mediaProfile['Resolution'] ?? [])); ?>
+            </div>
+
+            <div class="media-profile-period" data-media-content="audio" hidden>
+                <?php renderBreakdown(associativeRows($mediaProfile['Audio'] ?? [])); ?>
+            </div>
         </article>
     </section>
+
+    <div class="dashboard-section-heading">
+        <span>RECENT CONTENT</span>
+        <p>Latest additions to the library</p>
+    </div>
 
     <section class="panel recent-panel v2-recent-panel" data-section="recent">
         <div class="panel-heading">
@@ -769,6 +806,15 @@ function configureTabs(panel, tabSelector, contentSelector, dataKey) {
         });
     });
 }
+
+document.querySelectorAll('[data-media-panel]').forEach((panel) => {
+    configureTabs(
+        panel,
+        '[data-media-period]',
+        '[data-media-content]',
+        'mediaPeriod'
+    );
+});
 
 document.querySelectorAll('[data-metric-panel]').forEach((panel) => {
     configureTabs(

@@ -9,6 +9,11 @@ versioning where practical.
 
 ### Changed
 
+- Moved Library Growth into the overview metric row to remove unused space.
+- Combined video codecs, resolutions, and audio codecs into one tabbed Media Profile panel.
+- Added subtle visual headings for Popularity, Usage, Media Profile, and Recent Content sections.
+- Expanded the daily activity chart to the full available width.
+
 - Combined playback count and watch time into two tabbed cards with 30-day and all-time views.
 
 
